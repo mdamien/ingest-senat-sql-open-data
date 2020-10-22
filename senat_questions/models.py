@@ -13,6 +13,9 @@ class Etatquestion(models.Model):
     etaquelib = models.CharField(max_length=255, blank=True, null=True)
     etaquenumtri = models.BigIntegerField(blank=True, null=True)
 
+    def __str__(self):
+        return self.etaquelib
+
     class Meta:
         managed = False
         db_table = 'etatquestion'
@@ -25,6 +28,9 @@ class Legquestion(models.Model):
     legdatdeb = models.DateTimeField(blank=True, null=True)
     legdatfin = models.DateTimeField(blank=True, null=True)
 
+    def __str__(self):
+        return self.leglib
+
     class Meta:
         managed = False
         db_table = 'legquestion'
@@ -35,6 +41,9 @@ class Naturequestion(models.Model):
     natquelib = models.CharField(max_length=255, blank=True, null=True)
     natquenumtri = models.BigIntegerField(blank=True, null=True)
 
+    def __str__(self):
+        return self.natquelib
+
     class Meta:
         managed = False
         db_table = 'naturequestion'
@@ -44,6 +53,9 @@ class Sortquestion(models.Model):
     sorquecod = models.CharField(primary_key=True, max_length=12)
     sorquelib = models.CharField(max_length=120, blank=True, null=True)
     sorquenumtri = models.BigIntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return self.sorquelib
 
     class Meta:
         managed = False
@@ -61,6 +73,9 @@ class TamMinisteres(models.Model):
     titreministre = models.CharField(max_length=255, blank=True, null=True)
     intitulejo = models.CharField(max_length=255, blank=True, null=True)
     nomministre = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return self.libellelong or self.libelle
 
     class Meta:
         managed = False
@@ -131,7 +146,7 @@ class TamQuestions(models.Model):
 
 
 class TamReponses(models.Model):
-    idque = models.ForeignKey(TamQuestions, models.DO_NOTHING, db_column='idque')
+    idque = models.ForeignKey(TamQuestions, models.DO_NOTHING, db_column='idque', primary_key=True)
     datejorep = models.DateTimeField(blank=True, null=True)
     txtrep = models.TextField(blank=True, null=True)
     delaijoursrep = models.BigIntegerField(blank=True, null=True)
@@ -149,11 +164,14 @@ class TamReponses(models.Model):
         db_table = 'tam_reponses'
 
 
-class The(models.Model):
+class The(models.Model): # Theme
     thecle = models.SmallIntegerField(primary_key=True)
     thelib = models.CharField(max_length=80)
     theali = models.CharField(max_length=80, blank=True, null=True)
     thenouidt = models.BigIntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return self.thelib
 
     class Meta:
         managed = False
