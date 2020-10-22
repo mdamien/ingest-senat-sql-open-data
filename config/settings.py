@@ -11,7 +11,7 @@ INSTALLED_APPS += [
 
 DATABASE_ROUTERS = [
 	'senat_dosleg.dbrouter.SenatDoslegDBRouter',
-	'senat_debat.dbrouter.SenatDebatsDBRouter',
+	'senat_debats.dbrouter.SenatDebatsDBRouter',
     'senat_ameli.dbrouter.SenatAmeliDBRouter',
     'senat_sens.dbrouter.SenatSensDBRouter',
     'senat_questions.dbrouter.SenatQuestionsDBRouter',
