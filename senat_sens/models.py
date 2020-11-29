@@ -2,21 +2,21 @@
 # You'll have to do the following manually to clean this up:
 #   * Rearrange models' order
 #   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
+#   * Make sure each ForeignKey has `on_delete` set to the desired behavior.
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
 
 class Activite(models.Model):
-    actid = models.BigIntegerField(primary_key=True)
-    typactcod = models.CharField(max_length=30)
-    catactcod = models.CharField(max_length=20)
+    actid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    typactcod = models.CharField(max_length=30, verbose_name='Type')
+    catactcod = models.CharField(max_length=20, verbose_name='Catégorie')
     scrid = models.BigIntegerField(blank=True, null=True)
     comcod = models.CharField(max_length=12, blank=True, null=True)
     delegacod = models.CharField(max_length=12, blank=True, null=True)
-    actlic = models.CharField(max_length=90, blank=True, null=True)
-    actlib = models.CharField(max_length=120, blank=True, null=True)
+    actlic = models.CharField(max_length=90, blank=True, null=True, verbose_name='Libellé court')
+    actlib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
     datdeb = models.DateTimeField()
     datfin = models.DateTimeField()
     validdat = models.DateTimeField(blank=True, null=True)
@@ -45,8 +45,8 @@ class ActiviteDelegation(models.Model):
 
 
 class ActiviteLoi(models.Model):
-    actid = models.BigIntegerField(primary_key=True)
-    loicod = models.CharField(max_length=12)
+    actid = models.BigIntegerField(primary_key=True, verbose_name="Identifiant de l'activité")
+    loicod = models.CharField(max_length=12, verbose_name="Identifiant d'un texte dans la table loi de la base DOSLEG")
 
     class Meta:
         managed = False
@@ -55,12 +55,12 @@ class ActiviteLoi(models.Model):
 
 
 class ActiviteParticipant(models.Model):
-    actparid = models.BigIntegerField(primary_key=True)
-    actid = models.BigIntegerField()
-    senmat = models.CharField(max_length=6)
-    fapcod = models.CharField(max_length=30)
-    fapidx = models.BigIntegerField(blank=True, null=True)
-    typactparcod = models.CharField(max_length=20)
+    actparid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    actid = models.BigIntegerField(verbose_name='Activité à laquelle le Sénateur participe')
+    senmat = models.CharField(max_length=6, verbose_name='Sénateur')
+    fapcod = models.CharField(max_length=30, verbose_name='Fonction particulière')
+    fapidx = models.BigIntegerField(blank=True, null=True, verbose_name="Ordonnancement dans la fonction. Permet notamment d'ordonner les présidents de réunion.")
+    typactparcod = models.CharField(max_length=20, verbose_name="Sénateur présent ou excusé (au sens de la commission, pas de l'article 23bis).")
 
     class Meta:
         managed = False
@@ -69,11 +69,11 @@ class ActiviteParticipant(models.Model):
 
 
 class ActiviteSenateur(models.Model):
-    actsenid = models.BigIntegerField(primary_key=True)
-    senmat = models.CharField(max_length=6)
-    typactsencod = models.CharField(max_length=20)
-    datdeb = models.DateTimeField()
-    datfin = models.DateTimeField()
+    actsenid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    senmat = models.CharField(max_length=6, verbose_name='Sénateur')
+    typactsencod = models.CharField(max_length=20, verbose_name="Type d'activité")
+    datdeb = models.DateTimeField(verbose_name='Début')
+    datfin = models.DateTimeField(verbose_name='Fin')
     libelle = models.CharField(max_length=256, blank=True, null=True)
 
     class Meta:
@@ -92,11 +92,11 @@ class ActivitesLiees(models.Model):
 
 
 class Actpro(models.Model):
-    actprocod = models.CharField(primary_key=True, max_length=12)
+    actprocod = models.CharField(primary_key=True, max_length=12, verbose_name='Code activité professionnelle')
     actprolib = models.CharField(max_length=60)
     actpronumtri = models.BigIntegerField(blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -104,20 +104,20 @@ class Actpro(models.Model):
 
 
 class Adresse(models.Model):
-    adrid = models.BigIntegerField(primary_key=True)
-    poiconid = models.BigIntegerField()
+    adrid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    poiconid = models.BigIntegerField(verbose_name='Identifiant point de contact')
     typbistercod = models.CharField(max_length=12)
     typvoicod = models.CharField(max_length=12)
-    adrcmp = models.CharField(max_length=38, blank=True, null=True)
-    adrcmp2 = models.CharField(max_length=38, blank=True, null=True)
-    adrnumvoi = models.CharField(max_length=38, blank=True, null=True)
-    adrnomvoi = models.CharField(max_length=38, blank=True, null=True)
-    adrcom = models.CharField(max_length=38, blank=True, null=True)
-    adrcodpos = models.CharField(max_length=5, blank=True, null=True)
-    adrburdis = models.CharField(max_length=38, blank=True, null=True)
-    adrcdxcod = models.CharField(max_length=5, blank=True, null=True)
-    adrcdxlib = models.CharField(max_length=38, blank=True, null=True)
-    adrnumtri = models.BigIntegerField(blank=True, null=True)
+    adrcmp = models.CharField(max_length=38, blank=True, null=True, verbose_name='Complément adresse')
+    adrcmp2 = models.CharField(max_length=38, blank=True, null=True, verbose_name='Complément adresse 2')
+    adrnumvoi = models.CharField(max_length=38, blank=True, null=True, verbose_name='Numéro dans la voie')
+    adrnomvoi = models.CharField(max_length=38, blank=True, null=True, verbose_name='nom de la voie')
+    adrcom = models.CharField(max_length=38, blank=True, null=True, verbose_name='Commune')
+    adrcodpos = models.CharField(max_length=5, blank=True, null=True, verbose_name='Code postal')
+    adrburdis = models.CharField(max_length=38, blank=True, null=True, verbose_name='Bureau distributeur')
+    adrcdxcod = models.CharField(max_length=5, blank=True, null=True, verbose_name='Code Cedex')
+    adrcdxlib = models.CharField(max_length=38, blank=True, null=True, verbose_name='Libellé Cedex')
+    adrnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
     syscredat = models.DateTimeField(blank=True, null=True)
     sysmajdat = models.DateTimeField(blank=True, null=True)
 
@@ -132,8 +132,8 @@ class Asster(models.Model):
     assterlic = models.CharField(max_length=60, blank=True, null=True)
     assternumtri = models.BigIntegerField(blank=True, null=True)
     assterurlcmp = models.CharField(max_length=255, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
     assterart = models.CharField(max_length=60, blank=True, null=True)
 
     class Meta:
@@ -142,25 +142,25 @@ class Asster(models.Model):
 
 
 class Bur(models.Model):
-    burcod = models.CharField(primary_key=True, max_length=12)
-    burlib = models.CharField(max_length=120, blank=True, null=True)
-    burlic = models.CharField(max_length=60, blank=True, null=True)
-    burnumtri = models.BigIntegerField(blank=True, null=True)
-    burlil = models.CharField(max_length=255, blank=True, null=True)
-    burlibhon = models.CharField(max_length=120, blank=True, null=True)
-    burlicfem = models.CharField(max_length=60, blank=True, null=True)
-    burlibfem = models.CharField(max_length=120, blank=True, null=True)
-    burlilfem = models.CharField(max_length=255, blank=True, null=True)
-    burlicplu = models.CharField(max_length=60, blank=True, null=True)
-    burlibplu = models.CharField(max_length=120, blank=True, null=True)
-    burlilplu = models.CharField(max_length=255, blank=True, null=True)
-    burlibhonfem = models.CharField(max_length=120, blank=True, null=True)
-    burlibhonplu = models.CharField(max_length=120, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
-    burlicfemplu = models.CharField(max_length=60, blank=True, null=True)
-    burlibfemplu = models.CharField(max_length=120, blank=True, null=True)
-    burlilfemplu = models.CharField(max_length=255, blank=True, null=True)
+    burcod = models.CharField(primary_key=True, max_length=12, verbose_name='Code bureau 4e Rép.')
+    burlib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    burlic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    burnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    burlil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    burlibhon = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé honorariat')
+    burlicfem = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court féminin')
+    burlibfem = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé féminin')
+    burlilfem = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long féminin')
+    burlicplu = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court pluriel')
+    burlibplu = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé pluriel')
+    burlilplu = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long pluriel')
+    burlibhonfem = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé honorariat féminin')
+    burlibhonplu = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé honorariat pluriel')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
+    burlicfemplu = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court féminin pluriel')
+    burlibfemplu = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé féminin pluriel')
+    burlilfemplu = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long féminin pluriel')
 
     class Meta:
         managed = False
@@ -181,25 +181,25 @@ class CategorieActivite(models.Model):
 
 
 class Com(models.Model):
-    typorgcod = models.CharField(max_length=12)
-    orgcod = models.CharField(primary_key=True, max_length=12)
-    orgnumtri = models.BigIntegerField(blank=True, null=True)
-    orgdatcre = models.DateTimeField(blank=True, null=True)
-    orgdatfin = models.DateTimeField(blank=True, null=True)
-    orgnumtie = models.CharField(max_length=12, blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=500, blank=True, null=True)
-    orgart = models.CharField(max_length=60, blank=True, null=True)
-    comlilmin = models.CharField(max_length=500, blank=True, null=True)
-    orgurlsim = models.CharField(max_length=500, blank=True, null=True)
-    orgurlcmp = models.CharField(max_length=500, blank=True, null=True)
-    comlibameli = models.CharField(max_length=120, blank=True, null=True)
-    comcodameli = models.CharField(max_length=12, blank=True, null=True)
-    divcod = models.CharField(max_length=12, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    typorgcod = models.CharField(max_length=12, verbose_name='Code type organisme')
+    orgcod = models.CharField(primary_key=True, max_length=12, verbose_name='Code organisme')
+    orgnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    orgdatcre = models.DateTimeField(blank=True, null=True, verbose_name='Date création')
+    orgdatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date de fin')
+    orgnumtie = models.CharField(max_length=12, blank=True, null=True, verbose_name='NuméroTiers')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=500, blank=True, null=True, verbose_name='Libellé long')
+    orgart = models.CharField(max_length=60, blank=True, null=True, verbose_name='Article')
+    comlilmin = models.CharField(max_length=500, blank=True, null=True, verbose_name='Libellé long minuscule')
+    orgurlsim = models.CharField(max_length=500, blank=True, null=True, verbose_name='URL simplifié')
+    orgurlcmp = models.CharField(max_length=500, blank=True, null=True, verbose_name='URL complet')
+    comlibameli = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé AMELI')
+    comcodameli = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code transfert AMELI')
+    divcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code division')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -207,13 +207,13 @@ class Com(models.Model):
 
 
 class Csp(models.Model):
-    cspcod = models.CharField(primary_key=True, max_length=12)
-    catprocod = models.CharField(max_length=12)
-    cspfamcod = models.CharField(max_length=12)
-    csplib = models.CharField(max_length=120, blank=True, null=True)
-    cspnumtri = models.BigIntegerField(blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    cspcod = models.CharField(primary_key=True, max_length=12, verbose_name='Code CSP')
+    catprocod = models.CharField(max_length=12, verbose_name='Code catégorie professionnelle')
+    cspfamcod = models.CharField(max_length=12, verbose_name='Code famille CSP')
+    csplib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Rubrique CSP')
+    cspnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri CSP')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -221,24 +221,24 @@ class Csp(models.Model):
 
 
 class Delega(models.Model):
-    typorgcod = models.CharField(max_length=12)
-    orgcod = models.CharField(primary_key=True, max_length=12)
-    orgnumtri = models.BigIntegerField(blank=True, null=True)
-    orgdatcre = models.DateTimeField(blank=True, null=True)
-    orgdatfin = models.DateTimeField(blank=True, null=True)
-    orgnumtie = models.CharField(max_length=12, blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    orgart = models.CharField(max_length=60, blank=True, null=True)
-    orgurlsim = models.CharField(max_length=255, blank=True, null=True)
-    orgurlcmp = models.CharField(max_length=255, blank=True, null=True)
-    orgregjur = models.CharField(max_length=255, blank=True, null=True)
-    orgmoddes = models.CharField(max_length=255, blank=True, null=True)
-    orgmemdep = models.CharField(max_length=12, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    typorgcod = models.CharField(max_length=12, verbose_name='Code type organisme')
+    orgcod = models.CharField(primary_key=True, max_length=12, verbose_name='Code organisme')
+    orgnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    orgdatcre = models.DateTimeField(blank=True, null=True, verbose_name='Date création')
+    orgdatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date de fin')
+    orgnumtie = models.CharField(max_length=12, blank=True, null=True, verbose_name='NuméroTiers')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    orgart = models.CharField(max_length=60, blank=True, null=True, verbose_name='Article')
+    orgurlsim = models.CharField(max_length=255, blank=True, null=True, verbose_name='URL simplifié')
+    orgurlcmp = models.CharField(max_length=255, blank=True, null=True, verbose_name='URL complet')
+    orgregjur = models.CharField(max_length=255, blank=True, null=True, verbose_name='Régime juridique')
+    orgmoddes = models.CharField(max_length=255, blank=True, null=True, verbose_name='Mode désignation')
+    orgmemdep = models.CharField(max_length=12, blank=True, null=True, verbose_name='Membres Députés')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -246,17 +246,17 @@ class Delega(models.Model):
 
 
 class Design(models.Model):
-    designcod = models.CharField(primary_key=True, max_length=12)
-    moddescod = models.CharField(max_length=12)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    orgcod = models.CharField(max_length=12)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    designnumtri = models.BigIntegerField(blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    designcod = models.CharField(primary_key=True, max_length=12, verbose_name='Code désignataire')
+    moddescod = models.CharField(max_length=12, verbose_name='Code')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    orgcod = models.CharField(max_length=12, verbose_name='Code organisme')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    designnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -264,20 +264,20 @@ class Design(models.Model):
 
 
 class Designoep(models.Model):
-    designcod = models.CharField(max_length=12)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    orgcod = models.CharField(max_length=12)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
+    designcod = models.CharField(max_length=12, verbose_name='Code désignataire')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    orgcod = models.CharField(max_length=12, verbose_name='Code organisme')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
     designoepnumtri = models.BigIntegerField(blank=True, null=True)
     designoepnbrtit = models.BigIntegerField(blank=True, null=True)
     designoepnbrsup = models.BigIntegerField(blank=True, null=True)
     designoepdatdeb = models.DateTimeField(blank=True, null=True)
     designoepdatfin = models.DateTimeField(blank=True, null=True)
     designoepid = models.BigIntegerField(primary_key=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
     fonmemextparcod = models.CharField(max_length=20)
     fontemrem = models.CharField(max_length=12, blank=True, null=True)
     fonremlil = models.CharField(max_length=512, blank=True, null=True)
@@ -289,21 +289,21 @@ class Designoep(models.Model):
 
 
 class Designorg(models.Model):
-    designcod = models.CharField(primary_key=True, max_length=12)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    designnumtri = models.BigIntegerField(blank=True, null=True)
-    designlib = models.CharField(max_length=120, blank=True, null=True)
-    designlic = models.CharField(max_length=60, blank=True, null=True)
-    designlil = models.CharField(max_length=255, blank=True, null=True)
-    designlibfem = models.CharField(max_length=120, blank=True, null=True)
-    designlicfem = models.CharField(max_length=60, blank=True, null=True)
-    designlilfem = models.CharField(max_length=255, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    designcod = models.CharField(primary_key=True, max_length=12, verbose_name='Code désignataire')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    designnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    designlib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    designlic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    designlil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    designlibfem = models.CharField(max_length=120, blank=True, null=True, verbose_name='Lbellé féminin')
+    designlicfem = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé féminin court')
+    designlilfem = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé féminin long')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -311,28 +311,28 @@ class Designorg(models.Model):
 
 
 class Dpt(models.Model):
-    dptnum = models.BigIntegerField(primary_key=True)
-    dptcod = models.CharField(max_length=12)
-    dptlib = models.CharField(max_length=120)
-    dptnbrsen = models.BigIntegerField(blank=True, null=True)
-    dptmodscrsen = models.CharField(max_length=12, blank=True, null=True)
-    dptser = models.CharField(max_length=1)
-    regcod = models.CharField(max_length=12)
-    dptnumtri = models.BigIntegerField()
-    dptlic = models.CharField(max_length=60, blank=True, null=True)
-    dptart = models.CharField(max_length=60, blank=True, null=True)
-    dptlibtri = models.CharField(max_length=120, blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    dptser2004 = models.CharField(max_length=1, blank=True, null=True)
-    dptcmt = models.CharField(max_length=255, blank=True, null=True)
-    dptdatdeb = models.DateTimeField(blank=True, null=True)
-    dptdatfin = models.DateTimeField(blank=True, null=True)
-    dpturlcmp = models.CharField(max_length=255, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    dptnum = models.BigIntegerField(primary_key=True, verbose_name='Identifiant circonscription')
+    dptcod = models.CharField(max_length=12, verbose_name='Code INSEE')
+    dptlib = models.CharField(max_length=120, verbose_name='Libellé')
+    dptnbrsen = models.BigIntegerField(blank=True, null=True, verbose_name='Nombre sénateurs')
+    dptmodscrsen = models.CharField(max_length=12, blank=True, null=True, verbose_name='Mode scrutin sénatorial')
+    dptser = models.CharField(max_length=1, verbose_name='Série (A,B,C)')
+    regcod = models.CharField(max_length=12, verbose_name='Code région')
+    dptnumtri = models.BigIntegerField(verbose_name='Numéro de tri')
+    dptlic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    dptart = models.CharField(max_length=60, blank=True, null=True, verbose_name='Article')
+    dptlibtri = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé Moyen')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    dptser2004 = models.CharField(max_length=1, blank=True, null=True, verbose_name='Série (1,2)')
+    dptcmt = models.CharField(max_length=255, blank=True, null=True, verbose_name='Commentaire listes')
+    dptdatdeb = models.DateTimeField(blank=True, null=True, verbose_name='Date de début')
+    dptdatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date de fin')
+    dpturlcmp = models.CharField(max_length=255, blank=True, null=True, verbose_name='URL')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -340,17 +340,17 @@ class Dpt(models.Model):
 
 
 class Dptele(models.Model):
-    dptnum = models.BigIntegerField()
-    dptelenbrsie = models.BigIntegerField(blank=True, null=True)
-    dpteleid = models.BigIntegerField(primary_key=True)
-    typelecod = models.CharField(max_length=12)
-    validcod = models.CharField(max_length=32)
-    valid2cod = models.CharField(max_length=32)
-    participaidt1 = models.BigIntegerField(blank=True, null=True)
-    participaidt2 = models.BigIntegerField(blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
-    eleid = models.BigIntegerField()
+    dptnum = models.BigIntegerField(verbose_name='Identifiant circonscription')
+    dptelenbrsie = models.BigIntegerField(blank=True, null=True, verbose_name='Nombre de sièges')
+    dpteleid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    typelecod = models.CharField(max_length=12, verbose_name='Code type élection')
+    validcod = models.CharField(max_length=32, verbose_name='Code validation')
+    valid2cod = models.CharField(max_length=32, verbose_name='Code validation')
+    participaidt1 = models.BigIntegerField(blank=True, null=True, verbose_name='Identifiant participation')
+    participaidt2 = models.BigIntegerField(blank=True, null=True, verbose_name='Identifiant participation')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
+    eleid = models.BigIntegerField(verbose_name='Identifiant')
     dptelenbrsiepvr = models.BigIntegerField(blank=True, null=True)
     dptelecmt = models.CharField(max_length=255, blank=True, null=True)
 
@@ -360,8 +360,8 @@ class Dptele(models.Model):
 
 
 class Dpttypman(models.Model):
-    dptnum = models.BigIntegerField()
-    typmancod = models.CharField(max_length=12)
+    dptnum = models.BigIntegerField(verbose_name='Identifiant circonscription')
+    typmancod = models.CharField(max_length=12, verbose_name='Code type mandat')
     dpttypmanid = models.BigIntegerField(primary_key=True)
 
     class Meta:
@@ -370,19 +370,19 @@ class Dpttypman(models.Model):
 
 
 class Ele(models.Model):
-    typmancod = models.CharField(max_length=12)
-    eleann = models.CharField(max_length=12)
-    eledat = models.DateTimeField(blank=True, null=True)
-    eledatdeb = models.DateTimeField(blank=True, null=True)
-    eledatfinpre = models.DateTimeField(blank=True, null=True)
-    eleser = models.CharField(max_length=1, blank=True, null=True)
-    elelic = models.CharField(max_length=60, blank=True, null=True)
-    elelib = models.CharField(max_length=120, blank=True, null=True)
-    elelil = models.CharField(max_length=255, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
-    eleid = models.BigIntegerField(primary_key=True)
-    elepar = models.CharField(max_length=12, blank=True, null=True)
+    typmancod = models.CharField(max_length=12, verbose_name='Code type mandat')
+    eleann = models.CharField(max_length=12, verbose_name='Année')
+    eledat = models.DateTimeField(blank=True, null=True, verbose_name="Date de l'élection")
+    eledatdeb = models.DateTimeField(blank=True, null=True, verbose_name='Date début mandat')
+    eledatfinpre = models.DateTimeField(blank=True, null=True, verbose_name='Date fin mandat précédent')
+    eleser = models.CharField(max_length=1, blank=True, null=True, verbose_name='Série')
+    elelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    elelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    elelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
+    eleid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    elepar = models.CharField(max_length=12, blank=True, null=True, verbose_name='Élection partielle')
 
     class Meta:
         managed = False
@@ -390,25 +390,25 @@ class Ele(models.Model):
 
 
 class Elucan(models.Model):
-    eluid = models.BigIntegerField(primary_key=True)
-    eludatdeb = models.DateTimeField(blank=True, null=True)
-    eludatelu = models.DateTimeField(blank=True, null=True)
-    eludatfin = models.DateTimeField(blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    eluanndeb = models.BigIntegerField(blank=True, null=True)
-    eluannfin = models.BigIntegerField(blank=True, null=True)
-    elunbrhab = models.BigIntegerField(blank=True, null=True)
-    typmancod = models.CharField(max_length=12, blank=True, null=True)
-    dptnum = models.BigIntegerField(blank=True, null=True)
-    senmat = models.CharField(max_length=6)
-    canart = models.CharField(max_length=60, blank=True, null=True)
-    eludatcum = models.DateTimeField(blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    eluid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    eludatdeb = models.DateTimeField(blank=True, null=True, verbose_name='Date début mandat')
+    eludatelu = models.DateTimeField(blank=True, null=True, verbose_name="Date d'élection")
+    eludatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date fin mandat')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    eluanndeb = models.BigIntegerField(blank=True, null=True, verbose_name='Année début mandat')
+    eluannfin = models.BigIntegerField(blank=True, null=True, verbose_name='Année fin mandat')
+    elunbrhab = models.BigIntegerField(blank=True, null=True, verbose_name="Nombre d'habitants")
+    typmancod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code type mandat')
+    dptnum = models.BigIntegerField(blank=True, null=True, verbose_name='Identifiant du département')
+    senmat = models.CharField(max_length=6, verbose_name='Matricule')
+    canart = models.CharField(max_length=60, blank=True, null=True, verbose_name='Aaticle de la circonscription')
+    eludatcum = models.DateTimeField(blank=True, null=True, verbose_name='Date cumul')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -416,24 +416,24 @@ class Elucan(models.Model):
 
 
 class Eludep(models.Model):
-    eluid = models.BigIntegerField(primary_key=True)
-    eludatdeb = models.DateTimeField(blank=True, null=True)
+    eluid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    eludatdeb = models.DateTimeField(blank=True, null=True, verbose_name='Date début mandat')
     depcod = models.CharField(max_length=12, blank=True, null=True)
-    eludatelu = models.DateTimeField(blank=True, null=True)
-    eludatfin = models.DateTimeField(blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    eluanndeb = models.BigIntegerField(blank=True, null=True)
-    eluannfin = models.BigIntegerField(blank=True, null=True)
-    elunbrhab = models.BigIntegerField(blank=True, null=True)
-    typmancod = models.CharField(max_length=12, blank=True, null=True)
-    senmat = models.CharField(max_length=6)
-    eludatcum = models.DateTimeField(blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    eludatelu = models.DateTimeField(blank=True, null=True, verbose_name="Date d'élection")
+    eludatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date fin mandat')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    eluanndeb = models.BigIntegerField(blank=True, null=True, verbose_name='Année début mandat')
+    eluannfin = models.BigIntegerField(blank=True, null=True, verbose_name='Année fin mandat')
+    elunbrhab = models.BigIntegerField(blank=True, null=True, verbose_name="Nombre d'habitants")
+    typmancod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code type mandat')
+    senmat = models.CharField(max_length=6, verbose_name='Matricule')
+    eludatcum = models.DateTimeField(blank=True, null=True, verbose_name='Date cumul')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
     id_organe_assnat = models.CharField(max_length=50, blank=True, null=True)
     circo = models.BigIntegerField(blank=True, null=True)
 
@@ -443,25 +443,25 @@ class Eludep(models.Model):
 
 
 class Eludiv(models.Model):
-    eluid = models.BigIntegerField(primary_key=True)
-    eludatdeb = models.DateTimeField(blank=True, null=True)
-    eludatelu = models.DateTimeField(blank=True, null=True)
-    eludatfin = models.DateTimeField(blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    eluanndeb = models.BigIntegerField(blank=True, null=True)
-    eluannfin = models.BigIntegerField(blank=True, null=True)
-    elunbrhab = models.BigIntegerField(blank=True, null=True)
-    typmancod = models.CharField(max_length=12, blank=True, null=True)
-    senmat = models.CharField(max_length=6)
-    eludatcum = models.DateTimeField(blank=True, null=True)
+    eluid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    eludatdeb = models.DateTimeField(blank=True, null=True, verbose_name='Date début mandat')
+    eludatelu = models.DateTimeField(blank=True, null=True, verbose_name="Date d'élection")
+    eludatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date fin mandat')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    eluanndeb = models.BigIntegerField(blank=True, null=True, verbose_name='Année début mandat')
+    eluannfin = models.BigIntegerField(blank=True, null=True, verbose_name='Année fin mandat')
+    elunbrhab = models.BigIntegerField(blank=True, null=True, verbose_name="Nombre d'habitants")
+    typmancod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code type mandat')
+    senmat = models.CharField(max_length=6, verbose_name='Matricule')
+    eludatcum = models.DateTimeField(blank=True, null=True, verbose_name='Date cumul')
     eludivurlcmp = models.CharField(max_length=255, blank=True, null=True)
     eludivart = models.CharField(max_length=60, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -469,24 +469,24 @@ class Eludiv(models.Model):
 
 
 class Elueur(models.Model):
-    eluid = models.BigIntegerField(primary_key=True)
-    eludatdeb = models.DateTimeField(blank=True, null=True)
-    eludatelu = models.DateTimeField(blank=True, null=True)
-    eludatfin = models.DateTimeField(blank=True, null=True)
+    eluid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    eludatdeb = models.DateTimeField(blank=True, null=True, verbose_name='Date début mandat')
+    eludatelu = models.DateTimeField(blank=True, null=True, verbose_name="Date d'élection")
+    eludatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date fin mandat')
     nationcod = models.CharField(max_length=12, blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    eluanndeb = models.BigIntegerField(blank=True, null=True)
-    eluannfin = models.BigIntegerField(blank=True, null=True)
-    elunbrhab = models.BigIntegerField(blank=True, null=True)
-    typmancod = models.CharField(max_length=12, blank=True, null=True)
-    senmat = models.CharField(max_length=6)
-    eludatcum = models.DateTimeField(blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    eluanndeb = models.BigIntegerField(blank=True, null=True, verbose_name='Année début mandat')
+    eluannfin = models.BigIntegerField(blank=True, null=True, verbose_name='Année fin mandat')
+    elunbrhab = models.BigIntegerField(blank=True, null=True, verbose_name="Nombre d'habitants")
+    typmancod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code type mandat')
+    senmat = models.CharField(max_length=6, verbose_name='Matricule')
+    eludatcum = models.DateTimeField(blank=True, null=True, verbose_name='Date cumul')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -494,24 +494,24 @@ class Elueur(models.Model):
 
 
 class Elureg(models.Model):
-    eluid = models.BigIntegerField(primary_key=True)
-    eludatdeb = models.DateTimeField(blank=True, null=True)
-    regcod = models.CharField(max_length=12, blank=True, null=True)
-    eludatelu = models.DateTimeField(blank=True, null=True)
-    eludatfin = models.DateTimeField(blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    eluanndeb = models.BigIntegerField(blank=True, null=True)
-    eluannfin = models.BigIntegerField(blank=True, null=True)
-    elunbrhab = models.BigIntegerField(blank=True, null=True)
-    typmancod = models.CharField(max_length=12, blank=True, null=True)
-    senmat = models.CharField(max_length=6)
-    eludatcum = models.DateTimeField(blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    eluid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    eludatdeb = models.DateTimeField(blank=True, null=True, verbose_name='Date début mandat')
+    regcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code région')
+    eludatelu = models.DateTimeField(blank=True, null=True, verbose_name="Date d'élection")
+    eludatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date fin mandat')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    eluanndeb = models.BigIntegerField(blank=True, null=True, verbose_name='Année début mandat')
+    eluannfin = models.BigIntegerField(blank=True, null=True, verbose_name='Année fin mandat')
+    elunbrhab = models.BigIntegerField(blank=True, null=True, verbose_name="Nombre d'habitants")
+    typmancod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code type mandat')
+    senmat = models.CharField(max_length=6, verbose_name='Matricule')
+    eludatcum = models.DateTimeField(blank=True, null=True, verbose_name='Date cumul')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -519,25 +519,25 @@ class Elureg(models.Model):
 
 
 class Elusen(models.Model):
-    eluid = models.BigIntegerField(primary_key=True)
-    dptnum = models.BigIntegerField()
-    eludatdeb = models.DateTimeField(blank=True, null=True)
-    eludatelu = models.DateTimeField(blank=True, null=True)
-    eludatfin = models.DateTimeField(blank=True, null=True)
-    etadebmancod = models.CharField(max_length=12)
-    etafinmancod = models.CharField(max_length=12, blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eluanndeb = models.BigIntegerField(blank=True, null=True)
-    eluannfin = models.BigIntegerField(blank=True, null=True)
-    typmancod = models.CharField(max_length=12, blank=True, null=True)
-    senmat = models.CharField(max_length=6)
-    eludatcum = models.DateTimeField(blank=True, null=True)
-    turelucod = models.CharField(max_length=12)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    eluid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    dptnum = models.BigIntegerField(verbose_name='Identifiant circonscription')
+    eludatdeb = models.DateTimeField(blank=True, null=True, verbose_name='Date début mandat')
+    eludatelu = models.DateTimeField(blank=True, null=True, verbose_name="Date d'élection")
+    eludatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date fin mandat')
+    etadebmancod = models.CharField(max_length=12, verbose_name='Code début de mandat')
+    etafinmancod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code état fin de mandat')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eluanndeb = models.BigIntegerField(blank=True, null=True, verbose_name='Année début mandat')
+    eluannfin = models.BigIntegerField(blank=True, null=True, verbose_name='Année fin mandat')
+    typmancod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code type mandat')
+    senmat = models.CharField(max_length=6, verbose_name='Matricule')
+    eludatcum = models.DateTimeField(blank=True, null=True, verbose_name='Date cumul')
+    turelucod = models.CharField(max_length=12, verbose_name='Code tour élection')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -545,24 +545,24 @@ class Elusen(models.Model):
 
 
 class Eluter(models.Model):
-    eluid = models.BigIntegerField(primary_key=True)
+    eluid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
     asstercod = models.CharField(max_length=12, blank=True, null=True)
-    typmancod = models.CharField(max_length=12, blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    eludatdeb = models.DateTimeField(blank=True, null=True)
-    eluanndeb = models.BigIntegerField(blank=True, null=True)
-    eludatelu = models.DateTimeField(blank=True, null=True)
-    eludatfin = models.DateTimeField(blank=True, null=True)
-    eluannfin = models.BigIntegerField(blank=True, null=True)
-    elunbrhab = models.BigIntegerField(blank=True, null=True)
-    senmat = models.CharField(max_length=6)
-    eludatcum = models.DateTimeField(blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    typmancod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code type mandat')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    eludatdeb = models.DateTimeField(blank=True, null=True, verbose_name='Date début mandat')
+    eluanndeb = models.BigIntegerField(blank=True, null=True, verbose_name='Année début mandat')
+    eludatelu = models.DateTimeField(blank=True, null=True, verbose_name="Date d'élection")
+    eludatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date fin mandat')
+    eluannfin = models.BigIntegerField(blank=True, null=True, verbose_name='Année fin mandat')
+    elunbrhab = models.BigIntegerField(blank=True, null=True, verbose_name="Nombre d'habitants")
+    senmat = models.CharField(max_length=6, verbose_name='Matricule')
+    eludatcum = models.DateTimeField(blank=True, null=True, verbose_name='Date cumul')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -570,20 +570,20 @@ class Eluter(models.Model):
 
 
 class Elutit(models.Model):
-    eluid = models.BigIntegerField()
-    titeluid = models.BigIntegerField(primary_key=True)
-    titelecod = models.CharField(max_length=12)
-    titeludatdeb = models.DateTimeField(blank=True, null=True)
-    titeluanndeb = models.BigIntegerField(blank=True, null=True)
-    titeludatfin = models.DateTimeField(blank=True, null=True)
-    titeluannfin = models.BigIntegerField(blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    titeluhon = models.CharField(max_length=12, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    eluid = models.BigIntegerField(verbose_name='Identifiant')
+    titeluid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    titelecod = models.CharField(max_length=12, verbose_name='Code titre élu')
+    titeludatdeb = models.DateTimeField(blank=True, null=True, verbose_name='Date de début')
+    titeluanndeb = models.BigIntegerField(blank=True, null=True, verbose_name='Année de début')
+    titeludatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date de fin')
+    titeluannfin = models.BigIntegerField(blank=True, null=True, verbose_name='Année de fin')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    titeluhon = models.CharField(max_length=12, blank=True, null=True, verbose_name='Honorariat')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -591,26 +591,26 @@ class Elutit(models.Model):
 
 
 class Eluvil(models.Model):
-    eluid = models.BigIntegerField(primary_key=True)
-    eludatdeb = models.DateTimeField(blank=True, null=True)
-    eludatelu = models.DateTimeField(blank=True, null=True)
-    eludatfin = models.DateTimeField(blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    eluanndeb = models.BigIntegerField(blank=True, null=True)
-    eluannfin = models.BigIntegerField(blank=True, null=True)
-    elunbrhab = models.BigIntegerField(blank=True, null=True)
-    typmancod = models.CharField(max_length=12, blank=True, null=True)
-    senmat = models.CharField(max_length=6)
+    eluid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    eludatdeb = models.DateTimeField(blank=True, null=True, verbose_name='Date début mandat')
+    eludatelu = models.DateTimeField(blank=True, null=True, verbose_name="Date d'élection")
+    eludatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date fin mandat')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    eluanndeb = models.BigIntegerField(blank=True, null=True, verbose_name='Année début mandat')
+    eluannfin = models.BigIntegerField(blank=True, null=True, verbose_name='Année fin mandat')
+    elunbrhab = models.BigIntegerField(blank=True, null=True, verbose_name="Nombre d'habitants")
+    typmancod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code type mandat')
+    senmat = models.CharField(max_length=6, verbose_name='Matricule')
     vilart = models.CharField(max_length=60, blank=True, null=True)
-    eludatcum = models.DateTimeField(blank=True, null=True)
+    eludatcum = models.DateTimeField(blank=True, null=True, verbose_name='Date cumul')
     vilurlcmp = models.CharField(max_length=255, blank=True, null=True)
     url = models.CharField(max_length=120, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -618,19 +618,19 @@ class Eluvil(models.Model):
 
 
 class Etadebman(models.Model):
-    etadebmancod = models.CharField(primary_key=True, max_length=12)
-    etadebmanlic = models.CharField(max_length=60)
-    etadebmanlib = models.CharField(max_length=120)
-    etadebmannumtri = models.BigIntegerField(blank=True, null=True)
-    etadebmanlil = models.CharField(max_length=255, blank=True, null=True)
-    etadebmanlicfem = models.CharField(max_length=120, blank=True, null=True)
-    etadebmanlibfem = models.CharField(max_length=120, blank=True, null=True)
-    etadebmanlilfem = models.CharField(max_length=255, blank=True, null=True)
-    etadebmanlicplu = models.CharField(max_length=60, blank=True, null=True)
-    etadebmanlibplu = models.CharField(max_length=255, blank=True, null=True)
-    etadebmanlilplu = models.CharField(max_length=255, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    etadebmancod = models.CharField(primary_key=True, max_length=12, verbose_name='Code début de mandat')
+    etadebmanlic = models.CharField(max_length=60, verbose_name='Libellé court')
+    etadebmanlib = models.CharField(max_length=120, verbose_name='Libellé')
+    etadebmannumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    etadebmanlil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    etadebmanlicfem = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé court féminin')
+    etadebmanlibfem = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé féminin')
+    etadebmanlilfem = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long féminin')
+    etadebmanlicplu = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court pluriel')
+    etadebmanlibplu = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé pluriel')
+    etadebmanlilplu = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long pluriel')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -638,19 +638,19 @@ class Etadebman(models.Model):
 
 
 class Etafinman(models.Model):
-    etafinmancod = models.CharField(primary_key=True, max_length=12)
-    etafinmanlic = models.CharField(max_length=60)
-    etafinman = models.CharField(max_length=120)
-    etafinmannumtri = models.BigIntegerField(blank=True, null=True)
-    etafinmanlil = models.CharField(max_length=255, blank=True, null=True)
-    etafinmanlicfem = models.CharField(max_length=60, blank=True, null=True)
-    etafinmanlibfem = models.CharField(max_length=120, blank=True, null=True)
-    etafinmanlilfem = models.CharField(max_length=255, blank=True, null=True)
-    etafinmanlicplu = models.CharField(max_length=60, blank=True, null=True)
-    etafinmanlibplu = models.CharField(max_length=120, blank=True, null=True)
-    etafinmanlilplu = models.CharField(max_length=255, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    etafinmancod = models.CharField(primary_key=True, max_length=12, verbose_name='Code état fin de mandat')
+    etafinmanlic = models.CharField(max_length=60, verbose_name='Libellé court')
+    etafinman = models.CharField(max_length=120, verbose_name='Libellé')
+    etafinmannumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    etafinmanlil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    etafinmanlicfem = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court féminin')
+    etafinmanlibfem = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé féminin')
+    etafinmanlilfem = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long féminin')
+    etafinmanlicplu = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libelle court pluriel')
+    etafinmanlibplu = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé pluriel')
+    etafinmanlilplu = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long pluriel')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -658,19 +658,19 @@ class Etafinman(models.Model):
 
 
 class Etasen(models.Model):
-    etasencod = models.CharField(primary_key=True, max_length=12)
-    etasenlic = models.CharField(max_length=60)
-    etasenlib = models.CharField(max_length=120, blank=True, null=True)
-    etasennumtri = models.BigIntegerField(blank=True, null=True)
-    etasenlil = models.CharField(max_length=255, blank=True, null=True)
-    etasenlicfem = models.CharField(max_length=60, blank=True, null=True)
-    etasenlibfem = models.CharField(max_length=120, blank=True, null=True)
-    etasenlilfem = models.CharField(max_length=255, blank=True, null=True)
-    etasenlicplu = models.CharField(max_length=60, blank=True, null=True)
-    etasenlibplu = models.CharField(max_length=120, blank=True, null=True)
-    etasenlilplu = models.CharField(max_length=255, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    etasencod = models.CharField(primary_key=True, max_length=12, verbose_name='Code état sénateur')
+    etasenlic = models.CharField(max_length=60, verbose_name='Libellé court')
+    etasenlib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    etasennumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    etasenlil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    etasenlicfem = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court féminin')
+    etasenlibfem = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé féminin')
+    etasenlilfem = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long féminin')
+    etasenlicplu = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libelle court pluriel')
+    etasenlibplu = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé pluriel')
+    etasenlilplu = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long pluriel')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -694,22 +694,22 @@ class FonactParticipant(models.Model):
 
 
 class Foncom(models.Model):
-    foncomcod = models.CharField(primary_key=True, max_length=12)
-    foncomlib = models.CharField(max_length=120)
-    foncomlic = models.CharField(max_length=60)
-    foncomnumtri = models.BigIntegerField(blank=True, null=True)
-    foncomlil = models.CharField(max_length=255, blank=True, null=True)
-    foncomlicfem = models.CharField(max_length=60, blank=True, null=True)
-    foncomlibfem = models.CharField(max_length=120, blank=True, null=True)
-    foncomlilfem = models.CharField(max_length=255, blank=True, null=True)
-    foncomlicplu = models.CharField(max_length=60, blank=True, null=True)
-    foncomlibplu = models.CharField(max_length=120, blank=True, null=True)
-    foncomlilplu = models.CharField(max_length=255, blank=True, null=True)
-    foncomlicfemplu = models.CharField(max_length=60, blank=True, null=True)
-    foncomlibfemplu = models.CharField(max_length=120, blank=True, null=True)
-    foncomlilfemplu = models.CharField(max_length=500, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    foncomcod = models.CharField(primary_key=True, max_length=12, verbose_name='Code fonction commission')
+    foncomlib = models.CharField(max_length=120, verbose_name='Libellé')
+    foncomlic = models.CharField(max_length=60, verbose_name='Libellé court')
+    foncomnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    foncomlil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    foncomlicfem = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court féminin')
+    foncomlibfem = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé féminin')
+    foncomlilfem = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long féminin')
+    foncomlicplu = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court pluriel')
+    foncomlibplu = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé pluriel')
+    foncomlilplu = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long pluriel')
+    foncomlicfemplu = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court féminin pluriel')
+    foncomlibfemplu = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé féminin pluriel')
+    foncomlilfemplu = models.CharField(max_length=500, blank=True, null=True, verbose_name='Libellé long féminin pluriel')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -717,22 +717,22 @@ class Foncom(models.Model):
 
 
 class Fondelega(models.Model):
-    fondelcod = models.CharField(primary_key=True, max_length=12)
-    fondellib = models.CharField(max_length=120)
-    fondellic = models.CharField(max_length=60)
-    fondelnumtri = models.BigIntegerField(blank=True, null=True)
-    fondellil = models.CharField(max_length=255, blank=True, null=True)
-    fondellicfem = models.CharField(max_length=60, blank=True, null=True)
-    fondellibfem = models.CharField(max_length=120, blank=True, null=True)
-    fondellilfem = models.CharField(max_length=255, blank=True, null=True)
-    fondellicplu = models.CharField(max_length=60, blank=True, null=True)
-    fondellibplu = models.CharField(max_length=120, blank=True, null=True)
-    fondellilplu = models.CharField(max_length=255, blank=True, null=True)
-    fondellicfemplu = models.CharField(max_length=60, blank=True, null=True)
-    fondellibfemplu = models.CharField(max_length=120, blank=True, null=True)
-    fondellilfemplu = models.CharField(max_length=500, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    fondelcod = models.CharField(primary_key=True, max_length=12, verbose_name='Code fonction délégation')
+    fondellib = models.CharField(max_length=120, verbose_name='Libellé')
+    fondellic = models.CharField(max_length=60, verbose_name='Libellé court')
+    fondelnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    fondellil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    fondellicfem = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court féminin')
+    fondellibfem = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé  féminin')
+    fondellilfem = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long féminin')
+    fondellicplu = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libelle court pluriel')
+    fondellibplu = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé pluriel')
+    fondellilplu = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long pluriel')
+    fondellicfemplu = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court féminin pluriel')
+    fondellibfemplu = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé féminin pluriel')
+    fondellilfemplu = models.CharField(max_length=500, blank=True, null=True, verbose_name='Libellé long féminin pluriel')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -740,22 +740,22 @@ class Fondelega(models.Model):
 
 
 class Fongrppol(models.Model):
-    fongrppolcod = models.CharField(primary_key=True, max_length=12)
-    fongrppollib = models.CharField(max_length=120)
-    fongrppollic = models.CharField(max_length=60)
-    fongrppolnumtri = models.BigIntegerField(blank=True, null=True)
-    fongrppollil = models.CharField(max_length=255, blank=True, null=True)
-    fongrppollibfem = models.CharField(max_length=120, blank=True, null=True)
-    fongrppollicfem = models.CharField(max_length=60, blank=True, null=True)
-    fongrppollilfem = models.CharField(max_length=255, blank=True, null=True)
-    fongrppollibplu = models.CharField(max_length=120, blank=True, null=True)
-    fongrppollicplu = models.CharField(max_length=60, blank=True, null=True)
-    fongrppollilplu = models.CharField(max_length=255, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
-    fongrppollicfemplu = models.CharField(max_length=60, blank=True, null=True)
-    fongrppollibfemplu = models.CharField(max_length=120, blank=True, null=True)
-    fongrppollilfemplu = models.CharField(max_length=255, blank=True, null=True)
+    fongrppolcod = models.CharField(primary_key=True, max_length=12, verbose_name='Code fonction groupe politique')
+    fongrppollib = models.CharField(max_length=120, verbose_name='Libellé')
+    fongrppollic = models.CharField(max_length=60, verbose_name='Libellé court')
+    fongrppolnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    fongrppollil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    fongrppollibfem = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé féminin')
+    fongrppollicfem = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court féminin')
+    fongrppollilfem = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long féminin')
+    fongrppollibplu = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé pluriel')
+    fongrppollicplu = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court pluriel')
+    fongrppollilplu = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long pluriel')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
+    fongrppollicfemplu = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court féminin pluriel')
+    fongrppollibfemplu = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé féminin pluriel')
+    fongrppollilfemplu = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long féminin pluriel')
 
     class Meta:
         managed = False
@@ -763,7 +763,7 @@ class Fongrppol(models.Model):
 
 
 class Fongrpsen(models.Model):
-    fongrpsencod = models.CharField(primary_key=True, max_length=12)
+    fongrpsencod = models.CharField(primary_key=True, max_length=12, verbose_name='Code fonction groupe sénatorial')
     fongrpsenlib = models.CharField(max_length=120)
     fongrpsenlic = models.CharField(max_length=60)
     fongrpsennumtri = models.BigIntegerField(blank=True, null=True)
@@ -774,8 +774,8 @@ class Fongrpsen(models.Model):
     fongrpsenlibplu = models.CharField(max_length=120, blank=True, null=True)
     fongrpsenlicplu = models.CharField(max_length=60, blank=True, null=True)
     fongrpsenlilplu = models.CharField(max_length=255, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
     fongrpsenlicfemplu = models.CharField(max_length=60, blank=True, null=True)
     fongrpsenlibfemplu = models.CharField(max_length=120, blank=True, null=True)
     fongrpsenlilfemplu = models.CharField(max_length=255, blank=True, null=True)
@@ -786,19 +786,19 @@ class Fongrpsen(models.Model):
 
 
 class Fonmemcom(models.Model):
-    fonmemcomid = models.BigIntegerField(primary_key=True)
-    foncomcod = models.CharField(max_length=12)
-    fonmemcomdatdeb = models.DateTimeField(blank=True, null=True)
-    fonmemcomdatfin = models.DateTimeField(blank=True, null=True)
-    fonmemcomrngprt = models.BigIntegerField(blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    memcomid = models.BigIntegerField()
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    fonmemcomid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    foncomcod = models.CharField(max_length=12, verbose_name='Code fonction commission')
+    fonmemcomdatdeb = models.DateTimeField(blank=True, null=True, verbose_name='Date de début')
+    fonmemcomdatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date de fin')
+    fonmemcomrngprt = models.BigIntegerField(blank=True, null=True, verbose_name='Rang protocolaire')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    memcomid = models.BigIntegerField(verbose_name='Identifiant')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -806,19 +806,19 @@ class Fonmemcom(models.Model):
 
 
 class Fonmemdelega(models.Model):
-    fonmemdelid = models.BigIntegerField(primary_key=True)
-    fondelcod = models.CharField(max_length=12)
-    fonmemdeldatdeb = models.DateTimeField(blank=True, null=True)
-    fonmemdeldatfin = models.DateTimeField(blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    memdelegaid = models.BigIntegerField()
-    fonmemdelrngele = models.BigIntegerField(blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    fonmemdelid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    fondelcod = models.CharField(max_length=12, verbose_name='Code fonction délégation')
+    fonmemdeldatdeb = models.DateTimeField(blank=True, null=True, verbose_name='Date de début')
+    fonmemdeldatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date de fin')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    memdelegaid = models.BigIntegerField(verbose_name='Identifiant')
+    fonmemdelrngele = models.BigIntegerField(blank=True, null=True, verbose_name='Rang élection')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -826,18 +826,18 @@ class Fonmemdelega(models.Model):
 
 
 class Fonmemgrppol(models.Model):
-    fonmemgrppolid = models.BigIntegerField(primary_key=True)
-    fongrppolcod = models.CharField(max_length=12)
-    fonmemgrppoldatdeb = models.DateTimeField(blank=True, null=True)
-    fonmemgrppoldatfin = models.DateTimeField(blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=30, blank=True, null=True)
-    evelib = models.CharField(max_length=60, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    memgrppolid = models.BigIntegerField()
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    fonmemgrppolid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    fongrppolcod = models.CharField(max_length=12, verbose_name='Code fonction groupe politique')
+    fonmemgrppoldatdeb = models.DateTimeField(blank=True, null=True, verbose_name='Date de début')
+    fonmemgrppoldatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date de fin')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=30, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    memgrppolid = models.BigIntegerField(verbose_name='Identifiant')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -846,18 +846,18 @@ class Fonmemgrppol(models.Model):
 
 class Fonmemgrpsen(models.Model):
     fonmemgrpsenid = models.BigIntegerField(primary_key=True)
-    fongrpsencod = models.CharField(max_length=12)
+    fongrpsencod = models.CharField(max_length=12, verbose_name='Code fonction groupe sénatorial')
     fonmemgrpsendatdeb = models.DateTimeField()
     fonmemgrpsendatfin = models.DateTimeField(blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
     memgrpsenid = models.BigIntegerField()
     fonmemgrpsenrngele = models.BigIntegerField(blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -865,21 +865,21 @@ class Fonmemgrpsen(models.Model):
 
 
 class Fonmemorg(models.Model):
-    fonmemorgid = models.BigIntegerField(primary_key=True)
-    memorgid = models.BigIntegerField()
-    fonorgcod = models.CharField(max_length=12)
-    fonmemorgdatdeb = models.DateTimeField(blank=True, null=True)
-    fonmemorganndeb = models.BigIntegerField(blank=True, null=True)
-    fonmemorgdatfin = models.DateTimeField(blank=True, null=True)
-    fonmemorgannfin = models.BigIntegerField(blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    fonmemorgrngele = models.BigIntegerField(blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    fonmemorgid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    memorgid = models.BigIntegerField(verbose_name='Identifiant')
+    fonorgcod = models.CharField(max_length=12, verbose_name='Code fonction organisme')
+    fonmemorgdatdeb = models.DateTimeField(blank=True, null=True, verbose_name='Date de début')
+    fonmemorganndeb = models.BigIntegerField(blank=True, null=True, verbose_name='Année de début')
+    fonmemorgdatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date de fin')
+    fonmemorgannfin = models.BigIntegerField(blank=True, null=True, verbose_name='Année de fin')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    fonmemorgrngele = models.BigIntegerField(blank=True, null=True, verbose_name='Rang élection')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -887,22 +887,22 @@ class Fonmemorg(models.Model):
 
 
 class Fonorg(models.Model):
-    fonorgcod = models.CharField(primary_key=True, max_length=12)
-    fonorglib = models.CharField(max_length=120, blank=True, null=True)
-    fonorglic = models.CharField(max_length=60, blank=True, null=True)
-    fonorgnumtri = models.BigIntegerField(blank=True, null=True)
-    fonorglil = models.CharField(max_length=255, blank=True, null=True)
-    fonorglibfem = models.CharField(max_length=120, blank=True, null=True)
-    fonorglicfem = models.CharField(max_length=60, blank=True, null=True)
-    fonorglilfem = models.CharField(max_length=255, blank=True, null=True)
-    fonorglibplu = models.CharField(max_length=120, blank=True, null=True)
-    fonorglicplu = models.CharField(max_length=60, blank=True, null=True)
-    fonorglilplu = models.CharField(max_length=255, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
-    fonorglicfemplu = models.CharField(max_length=60, blank=True, null=True)
-    fonorglibfemplu = models.CharField(max_length=120, blank=True, null=True)
-    fonorglilfemplu = models.CharField(max_length=255, blank=True, null=True)
+    fonorgcod = models.CharField(primary_key=True, max_length=12, verbose_name='Code fonction organisme')
+    fonorglib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    fonorglic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    fonorgnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    fonorglil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    fonorglibfem = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé féminin')
+    fonorglicfem = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court féminin')
+    fonorglilfem = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long féminin')
+    fonorglibplu = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé pluriel')
+    fonorglicplu = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court pluriel')
+    fonorglilplu = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long pluriel')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
+    fonorglicfemplu = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court féminin pluriel')
+    fonorglibfemplu = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé féminin pluriel')
+    fonorglilfemplu = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long féminin pluriel')
 
     class Meta:
         managed = False
@@ -910,24 +910,24 @@ class Fonorg(models.Model):
 
 
 class Grppol(models.Model):
-    grppolcod = models.CharField(primary_key=True, max_length=12)
-    grppolpre = models.CharField(max_length=12, blank=True, null=True)
-    grppoldatcre = models.DateTimeField(blank=True, null=True)
-    grppoldatfin = models.DateTimeField(blank=True, null=True)
-    grppolliccou = models.CharField(max_length=60, blank=True, null=True)
-    grppollibcou = models.CharField(max_length=120, blank=True, null=True)
-    grppollilcou = models.CharField(max_length=255, blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    typorgcod = models.CharField(max_length=12)
-    grppolart = models.CharField(max_length=60, blank=True, null=True)
-    grppolurlsim = models.CharField(max_length=255, blank=True, null=True)
-    grppolurlcmp = models.CharField(max_length=255, blank=True, null=True)
-    grppolcodamelicou = models.CharField(max_length=12, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    grppolcod = models.CharField(primary_key=True, max_length=12, verbose_name='Code groupe politique 4e Rép.')
+    grppolpre = models.CharField(max_length=12, blank=True, null=True, verbose_name='A un président (ou un délégué)')
+    grppoldatcre = models.DateTimeField(blank=True, null=True, verbose_name='Date création')
+    grppoldatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date de fin')
+    grppolliccou = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court courant')
+    grppollibcou = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé courant')
+    grppollilcou = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long courant')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    typorgcod = models.CharField(max_length=12, verbose_name='Code type organisme')
+    grppolart = models.CharField(max_length=60, blank=True, null=True, verbose_name='Article')
+    grppolurlsim = models.CharField(max_length=255, blank=True, null=True, verbose_name='URL simplifiée (relative)')
+    grppolurlcmp = models.CharField(max_length=255, blank=True, null=True, verbose_name='URL complète')
+    grppolcodamelicou = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code transfert AMELI')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -935,28 +935,28 @@ class Grppol(models.Model):
 
 
 class Grpsenami(models.Model):
-    typorgcod = models.CharField(max_length=12)
-    orgcod = models.CharField(primary_key=True, max_length=12)
-    orgnumtri = models.BigIntegerField(blank=True, null=True)
-    orgdatcre = models.DateTimeField()
-    orgdatfin = models.DateTimeField(blank=True, null=True)
-    grpsenalf = models.CharField(max_length=5, blank=True, null=True)
-    scnorgcod = models.CharField(max_length=12, blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    orgart = models.CharField(max_length=60, blank=True, null=True)
-    grpsenweb = models.CharField(max_length=12, blank=True, null=True)
-    typgrpsencod = models.CharField(max_length=12)
-    orgurlsim = models.CharField(max_length=255, blank=True, null=True)
-    orgurlcmp = models.CharField(max_length=255, blank=True, null=True)
-    comorgcod = models.CharField(max_length=12)
-    orgtemannu = models.CharField(max_length=12, blank=True, null=True)
+    typorgcod = models.CharField(max_length=12, verbose_name='Code type organisme')
+    orgcod = models.CharField(primary_key=True, max_length=12, verbose_name='Code organisme')
+    orgnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    orgdatcre = models.DateTimeField(verbose_name='Date création')
+    orgdatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date de fin')
+    grpsenalf = models.CharField(max_length=5, blank=True, null=True, verbose_name='Membre APF')
+    scnorgcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code organisme')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    orgart = models.CharField(max_length=60, blank=True, null=True, verbose_name='Article')
+    grpsenweb = models.CharField(max_length=12, blank=True, null=True, verbose_name='Edition WEB')
+    typgrpsencod = models.CharField(max_length=12, verbose_name='Code type groupe')
+    orgurlsim = models.CharField(max_length=255, blank=True, null=True, verbose_name='URL simplifié')
+    orgurlcmp = models.CharField(max_length=255, blank=True, null=True, verbose_name='URL complet')
+    comorgcod = models.CharField(max_length=12, verbose_name='Code organisme')
+    orgtemannu = models.CharField(max_length=12, blank=True, null=True, verbose_name='Témoin transfert ANNUAIRE')
     plaindcod = models.CharField(max_length=12)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
-    type_com_neant = models.CharField(max_length=12, blank=True, null=True)
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
+    type_com_neant = models.CharField(max_length=12, blank=True, null=True, verbose_name="Pour les groupes non rattachés à une commission (COMORGCOD='NEANT') précise le type spécial de groupe : - HORSCOM : groupe hors commission (intergroupe par exemple) - TOUTCOM : groupe rattaché à plusieurs commissions (nouveau besoin 01/2018)")
 
     class Meta:
         managed = False
@@ -964,19 +964,19 @@ class Grpsenami(models.Model):
 
 
 class Libcom(models.Model):
-    orgcod = models.CharField(max_length=12)
-    libcomdatdeb = models.DateTimeField()
-    libcomdatfin = models.DateTimeField(blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=500, blank=True, null=True)
-    libcomart = models.CharField(max_length=12, blank=True, null=True)
-    libcomlilmin = models.CharField(max_length=500, blank=True, null=True)
-    libcomlibameli = models.CharField(max_length=120, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
-    libcomid = models.BigIntegerField(primary_key=True)
+    orgcod = models.CharField(max_length=12, verbose_name='Code organisme')
+    libcomdatdeb = models.DateTimeField(verbose_name='Date début')
+    libcomdatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date fin')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=500, blank=True, null=True, verbose_name='Libellé long')
+    libcomart = models.CharField(max_length=12, blank=True, null=True, verbose_name='Article')
+    libcomlilmin = models.CharField(max_length=500, blank=True, null=True, verbose_name='Libellé Minuscule')
+    libcomlibameli = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé transfert AMELI')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
+    libcomid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
 
     class Meta:
         managed = False
@@ -985,18 +985,18 @@ class Libcom(models.Model):
 
 
 class Libdelega(models.Model):
-    orgcod = models.CharField(max_length=12)
-    libdelegadatdeb = models.DateTimeField()
-    libdelegadatfin = models.DateTimeField(blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    libdelegaart = models.CharField(max_length=12, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
-    libdelegaid = models.BigIntegerField(primary_key=True)
+    orgcod = models.CharField(max_length=12, verbose_name='Code organisme')
+    libdelegadatdeb = models.DateTimeField(verbose_name='Date de début')
+    libdelegadatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date fin')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    libdelegaart = models.CharField(max_length=12, blank=True, null=True, verbose_name='Article')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
+    libdelegaid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
 
     class Meta:
         managed = False
@@ -1005,19 +1005,19 @@ class Libdelega(models.Model):
 
 
 class Libgrppol(models.Model):
-    grppolcod = models.CharField(max_length=12)
-    libgrppoldatdeb = models.DateTimeField()
-    libgrppoldatfin = models.DateTimeField(blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    libgrppolart = models.CharField(max_length=60, blank=True, null=True)
-    libgrppolcodameli = models.CharField(max_length=12, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
-    libgrppolid = models.BigIntegerField(primary_key=True)
+    grppolcod = models.CharField(max_length=12, verbose_name='Code groupe politique 4e Rép.')
+    libgrppoldatdeb = models.DateTimeField(verbose_name='Date début')
+    libgrppoldatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date de fin')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    libgrppolart = models.CharField(max_length=60, blank=True, null=True, verbose_name='Article')
+    libgrppolcodameli = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code transfert AMELI')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
+    libgrppolid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
 
     class Meta:
         managed = False
@@ -1026,16 +1026,16 @@ class Libgrppol(models.Model):
 
 
 class Libgrpsen(models.Model):
-    orgcod = models.CharField(max_length=12)
-    libgrpsendatautbur = models.DateTimeField()
-    libgrpsendatfin = models.DateTimeField(blank=True, null=True)
-    libgrpsenlib = models.CharField(max_length=120)
-    libgrpsenlic = models.CharField(max_length=60)
-    libgrpsenlil = models.CharField(max_length=255, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    orgcod = models.CharField(max_length=12, verbose_name='Code organisme')
+    libgrpsendatautbur = models.DateTimeField(verbose_name="Date d'autorisation bureau")
+    libgrpsendatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date de fin')
+    libgrpsenlib = models.CharField(max_length=120, verbose_name='Libellé groupe sénatorial')
+    libgrpsenlic = models.CharField(max_length=60, verbose_name='Libellé court')
+    libgrpsenlil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
     libgrpsenid = models.BigIntegerField(primary_key=True)
-    libgrpsenart = models.CharField(max_length=60, blank=True, null=True)
+    libgrpsenart = models.CharField(max_length=60, blank=True, null=True, verbose_name='Article')
 
     class Meta:
         managed = False
@@ -1044,18 +1044,18 @@ class Libgrpsen(models.Model):
 
 
 class Liborg(models.Model):
-    orgcod = models.CharField(max_length=12)
-    liborgdatdeb = models.DateTimeField()
-    liborgdatfin = models.DateTimeField(blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    liborgart = models.CharField(max_length=60, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
-    liborgid = models.BigIntegerField(primary_key=True)
+    orgcod = models.CharField(max_length=12, verbose_name='Code organisme')
+    liborgdatdeb = models.DateTimeField(verbose_name='Date de début')
+    liborgdatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date de fin')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    liborgart = models.CharField(max_length=60, blank=True, null=True, verbose_name='Article')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
+    liborgid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
 
     class Meta:
         managed = False
@@ -1064,10 +1064,10 @@ class Liborg(models.Model):
 
 
 class Mel(models.Model):
-    melid = models.BigIntegerField(primary_key=True)
-    poiconid = models.BigIntegerField()
-    melema = models.CharField(max_length=255, blank=True, null=True)
-    melnumtri = models.BigIntegerField(blank=True, null=True)
+    melid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant Mel')
+    poiconid = models.BigIntegerField(verbose_name='Identifiant point de contact')
+    melema = models.CharField(max_length=255, blank=True, null=True, verbose_name='Adresse Mel')
+    melnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
     syscredat = models.DateTimeField(blank=True, null=True)
     sysmajdat = models.DateTimeField(blank=True, null=True)
 
@@ -1077,19 +1077,19 @@ class Mel(models.Model):
 
 
 class Memcom(models.Model):
-    memcomid = models.BigIntegerField(primary_key=True)
-    orgcod = models.CharField(max_length=12)
-    memcomdatdeb = models.DateTimeField(blank=True, null=True)
-    memcomdatfin = models.DateTimeField(blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    senmat = models.CharField(max_length=6)
-    memcomtitsup = models.CharField(max_length=12, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    memcomid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    orgcod = models.CharField(max_length=12, verbose_name='Code organisme')
+    memcomdatdeb = models.DateTimeField(blank=True, null=True, verbose_name='Date de début')
+    memcomdatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date de fin')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    senmat = models.CharField(max_length=6, verbose_name='Matricule')
+    memcomtitsup = models.CharField(max_length=12, blank=True, null=True, verbose_name='Titulaire/Suppléant')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -1097,19 +1097,19 @@ class Memcom(models.Model):
 
 
 class Memdelega(models.Model):
-    memdelegaid = models.BigIntegerField(primary_key=True)
-    orgcod = models.CharField(max_length=12)
-    memdelegadatdeb = models.DateTimeField(blank=True, null=True)
-    memdelegadatfin = models.DateTimeField(blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    senmat = models.CharField(max_length=6)
-    designcod = models.CharField(max_length=12)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    memdelegaid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    orgcod = models.CharField(max_length=12, verbose_name='Code organisme')
+    memdelegadatdeb = models.DateTimeField(blank=True, null=True, verbose_name='Date de début')
+    memdelegadatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date de fin')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    senmat = models.CharField(max_length=6, verbose_name='Matricule')
+    designcod = models.CharField(max_length=12, verbose_name='Code désignataire')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -1117,21 +1117,21 @@ class Memdelega(models.Model):
 
 
 class Memextpar(models.Model):
-    memextparid = models.BigIntegerField(primary_key=True)
-    orgcod = models.CharField(max_length=12, blank=True, null=True)
-    memextpardatdeb = models.DateTimeField(blank=True, null=True)
-    memextpardatfin = models.DateTimeField(blank=True, null=True)
-    memextpartitsup = models.CharField(max_length=12, blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    senmat = models.CharField(max_length=6)
+    memextparid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    orgcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code organisme')
+    memextpardatdeb = models.DateTimeField(blank=True, null=True, verbose_name='Date de Debut')
+    memextpardatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date de fin')
+    memextpartitsup = models.CharField(max_length=12, blank=True, null=True, verbose_name='Titulaire Suppleant')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    senmat = models.CharField(max_length=6, verbose_name='Matricule')
     memextparrngele = models.BigIntegerField(blank=True, null=True)
-    designcod = models.CharField(max_length=12)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    designcod = models.CharField(max_length=12, verbose_name='Code désignataire')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
     fonmemextparcod = models.CharField(max_length=20, blank=True, null=True)
     avis_senat = models.CharField(max_length=20)
     texte_avis_senat = models.CharField(max_length=1024, blank=True, null=True)
@@ -1154,19 +1154,19 @@ class Memextpar(models.Model):
 
 
 class Memgrppol(models.Model):
-    memgrppolid = models.BigIntegerField(primary_key=True)
-    grppolcod = models.CharField(max_length=12)
-    typapppolcod = models.CharField(max_length=1)
-    memgrppoldatdeb = models.DateTimeField(blank=True, null=True)
-    memgrppoldatfin = models.DateTimeField(blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    senmat = models.CharField(max_length=6)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    memgrppolid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    grppolcod = models.CharField(max_length=12, verbose_name='Code groupe politique 4e Rép.')
+    typapppolcod = models.CharField(max_length=1, verbose_name='Code type appartenance')
+    memgrppoldatdeb = models.DateTimeField(blank=True, null=True, verbose_name='Date de début')
+    memgrppoldatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date de fin')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    senmat = models.CharField(max_length=6, verbose_name='Matricule')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -1175,16 +1175,16 @@ class Memgrppol(models.Model):
 
 class Memgrpsen(models.Model):
     memgrpsenid = models.BigIntegerField(primary_key=True)
-    orgcod = models.CharField(max_length=12)
+    orgcod = models.CharField(max_length=12, verbose_name='Code organisme')
     memgrpsendatent = models.DateTimeField()
     memgrpsendatsor = models.DateTimeField()
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    senmat = models.CharField(max_length=6)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    senmat = models.CharField(max_length=6, verbose_name='Matricule')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -1192,21 +1192,21 @@ class Memgrpsen(models.Model):
 
 
 class Memorg(models.Model):
-    memorgid = models.BigIntegerField(primary_key=True)
-    senmat = models.CharField(max_length=6)
-    orgcod = models.CharField(max_length=12)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    memorgdatdeb = models.DateTimeField(blank=True, null=True)
-    memorganndeb = models.BigIntegerField(blank=True, null=True)
-    memorgdatfin = models.DateTimeField(blank=True, null=True)
-    memorgannfin = models.BigIntegerField(blank=True, null=True)
-    designcod = models.CharField(max_length=12)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    memorgid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    senmat = models.CharField(max_length=6, verbose_name='Matricule')
+    orgcod = models.CharField(max_length=12, verbose_name='Code organisme')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    memorgdatdeb = models.DateTimeField(blank=True, null=True, verbose_name='Date de début')
+    memorganndeb = models.BigIntegerField(blank=True, null=True, verbose_name='Année de début')
+    memorgdatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date de fin')
+    memorgannfin = models.BigIntegerField(blank=True, null=True, verbose_name='Année de fin')
+    designcod = models.CharField(max_length=12, verbose_name='Code désignataire')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -1214,25 +1214,25 @@ class Memorg(models.Model):
 
 
 class Minind(models.Model):
-    minid = models.BigIntegerField(primary_key=True)
-    senmat = models.CharField(max_length=6, blank=True, null=True)
+    minid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    senmat = models.CharField(max_length=6, blank=True, null=True, verbose_name='Matricule')
     typmincod = models.CharField(max_length=12)
     gvtid = models.BigIntegerField()
     memgvtrngprt = models.BigIntegerField(blank=True, null=True)
-    mindatdeb = models.DateTimeField(blank=True, null=True)
-    minanndeb = models.BigIntegerField(blank=True, null=True)
-    mindatfin = models.DateTimeField(blank=True, null=True)
-    minannfin = models.BigIntegerField(blank=True, null=True)
-    mincirfin = models.CharField(max_length=120, blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
+    mindatdeb = models.DateTimeField(blank=True, null=True, verbose_name='Date Nomination')
+    minanndeb = models.BigIntegerField(blank=True, null=True, verbose_name='Année début')
+    mindatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date fin fonctions')
+    minannfin = models.BigIntegerField(blank=True, null=True, verbose_name='Année fin')
+    mincirfin = models.CharField(max_length=120, blank=True, null=True, verbose_name='Circ fin fon')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
     titmincod = models.CharField(max_length=12)
-    mindel = models.CharField(max_length=12, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    mindel = models.CharField(max_length=12, blank=True, null=True, verbose_name='Ministre délégué')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
     poicon = models.BigIntegerField(blank=True, null=True)
 
     class Meta:
@@ -1241,10 +1241,10 @@ class Minind(models.Model):
 
 
 class Mismin(models.Model):
-    misid = models.BigIntegerField()
-    minid = models.BigIntegerField(primary_key=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    misid = models.BigIntegerField(verbose_name='Identifiant Mission')
+    minid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant Ministre')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -1253,10 +1253,10 @@ class Mismin(models.Model):
 
 
 class Missen(models.Model):
-    misid = models.BigIntegerField(primary_key=True)
-    senmat = models.CharField(max_length=6)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    misid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    senmat = models.CharField(max_length=6, verbose_name='Matricule')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -1265,15 +1265,15 @@ class Missen(models.Model):
 
 
 class Moddes(models.Model):
-    moddescod = models.CharField(primary_key=True, max_length=12)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    moddesnumtri = models.BigIntegerField(blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    moddescod = models.CharField(primary_key=True, max_length=12, verbose_name='Code')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    moddesnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
     avis_com_senat = models.CharField(max_length=12, blank=True, null=True)
     avis_com_an = models.CharField(max_length=12, blank=True, null=True)
     typmoddescod = models.CharField(max_length=20, blank=True, null=True)
@@ -1292,12 +1292,12 @@ class Nation(models.Model):
     nationlibenr = models.CharField(max_length=70, blank=True, null=True)
     nationancnom = models.CharField(max_length=60, blank=True, null=True)
     nationlic = models.CharField(max_length=60, blank=True, null=True)
-    zongeocod = models.CharField(max_length=12)
+    zongeocod = models.CharField(max_length=12, verbose_name='Code zone géographique')
     nationliccap = models.CharField(max_length=60, blank=True, null=True)
     nationlictri = models.CharField(max_length=60, blank=True, null=True)
     nationurlcmp = models.CharField(max_length=255, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -1306,17 +1306,17 @@ class Nation(models.Model):
 
 class Nationgrpsen(models.Model):
     nationgrpsenid = models.BigIntegerField(primary_key=True)
-    orgcod = models.CharField(max_length=12)
+    orgcod = models.CharField(max_length=12, verbose_name='Code organisme')
     nationcod = models.CharField(max_length=12)
     nationgpsendatdeb = models.DateTimeField(blank=True, null=True)
     nationgrpsendatfin = models.DateTimeField(blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -1324,24 +1324,24 @@ class Nationgrpsen(models.Model):
 
 
 class Org(models.Model):
-    typorgcod = models.CharField(max_length=12)
-    orgcod = models.CharField(primary_key=True, max_length=12)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    orgart = models.CharField(max_length=60, blank=True, null=True)
-    orgnumtri = models.BigIntegerField(blank=True, null=True)
-    orgdatcre = models.DateTimeField(blank=True, null=True)
-    orgdatfin = models.DateTimeField(blank=True, null=True)
-    orgurlsim = models.CharField(max_length=255, blank=True, null=True)
-    orgurlcmp = models.CharField(max_length=255, blank=True, null=True)
-    orgregjur = models.CharField(max_length=255, blank=True, null=True)
-    orgmoddes = models.CharField(max_length=255, blank=True, null=True)
-    orgmemdep = models.CharField(max_length=12, blank=True, null=True)
-    orgtemannu = models.CharField(max_length=12, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    typorgcod = models.CharField(max_length=12, verbose_name='Code type organisme')
+    orgcod = models.CharField(primary_key=True, max_length=12, verbose_name='Code organisme')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    orgart = models.CharField(max_length=60, blank=True, null=True, verbose_name='Article')
+    orgnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    orgdatcre = models.DateTimeField(blank=True, null=True, verbose_name='Date création')
+    orgdatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date de fin')
+    orgurlsim = models.CharField(max_length=255, blank=True, null=True, verbose_name='URL simplifié')
+    orgurlcmp = models.CharField(max_length=255, blank=True, null=True, verbose_name='URL complet')
+    orgregjur = models.CharField(max_length=255, blank=True, null=True, verbose_name='Régime juridique')
+    orgmoddes = models.CharField(max_length=255, blank=True, null=True, verbose_name='Mode désignation')
+    orgmemdep = models.CharField(max_length=12, blank=True, null=True, verbose_name='Membres Députés')
+    orgtemannu = models.CharField(max_length=12, blank=True, null=True, verbose_name='Témoin transfert ANNUAIRE')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -1349,35 +1349,35 @@ class Org(models.Model):
 
 
 class Orgext(models.Model):
-    typorgcod = models.CharField(max_length=12)
-    orgcod = models.CharField(primary_key=True, max_length=12)
-    orgnumtri = models.BigIntegerField(blank=True, null=True)
-    orgdatcre = models.DateTimeField(blank=True, null=True)
-    orgdatfin = models.DateTimeField(blank=True, null=True)
-    orgnumtie = models.CharField(max_length=12, blank=True, null=True)
-    orgextregjur = models.CharField(max_length=500, blank=True, null=True)
-    orgextrubclas = models.CharField(max_length=255, blank=True, null=True)
-    orgextnbrsen = models.BigIntegerField(blank=True, null=True)
-    orgextdurman = models.CharField(max_length=120, blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    orgart = models.CharField(max_length=60, blank=True, null=True)
-    orgextmoddes = models.CharField(max_length=500, blank=True, null=True)
-    orgextminrat = models.CharField(max_length=120, blank=True, null=True)
-    orgextrep = models.CharField(max_length=255, blank=True, null=True)
-    orgurlsim = models.CharField(max_length=255, blank=True, null=True)
-    orgurlcmp = models.CharField(max_length=255, blank=True, null=True)
-    orgtemannu = models.CharField(max_length=12, blank=True, null=True)
-    stajurcod = models.CharField(max_length=12)
-    etaprrcod = models.CharField(max_length=12)
-    orgextdatprr = models.DateTimeField(blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
-    basdescod = models.CharField(max_length=12)
-    orgparite = models.CharField(max_length=12, blank=True, null=True)
+    typorgcod = models.CharField(max_length=12, verbose_name='Code type organisme')
+    orgcod = models.CharField(primary_key=True, max_length=12, verbose_name='Code organisme')
+    orgnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    orgdatcre = models.DateTimeField(blank=True, null=True, verbose_name='Date création')
+    orgdatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date de fin')
+    orgnumtie = models.CharField(max_length=12, blank=True, null=True, verbose_name='NuméroTiers')
+    orgextregjur = models.CharField(max_length=500, blank=True, null=True, verbose_name='Régime juridique')
+    orgextrubclas = models.CharField(max_length=255, blank=True, null=True, verbose_name='Rubrique de classement (obsolète)')
+    orgextnbrsen = models.BigIntegerField(blank=True, null=True, verbose_name='Nombre de représentants')
+    orgextdurman = models.CharField(max_length=120, blank=True, null=True, verbose_name='Durée du mandat')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    orgart = models.CharField(max_length=60, blank=True, null=True, verbose_name='Article')
+    orgextmoddes = models.CharField(max_length=500, blank=True, null=True, verbose_name='Mode de désignation')
+    orgextminrat = models.CharField(max_length=120, blank=True, null=True, verbose_name='Ministère de rattachement')
+    orgextrep = models.CharField(max_length=255, blank=True, null=True, verbose_name='Représentants')
+    orgurlsim = models.CharField(max_length=255, blank=True, null=True, verbose_name='URL simplifié')
+    orgurlcmp = models.CharField(max_length=255, blank=True, null=True, verbose_name='URL complet')
+    orgtemannu = models.CharField(max_length=12, blank=True, null=True, verbose_name='Témoin transfert ANNUAIRE')
+    stajurcod = models.CharField(max_length=12, verbose_name='Code')
+    etaprrcod = models.CharField(max_length=12, verbose_name='Code')
+    orgextdatprr = models.DateTimeField(blank=True, null=True, verbose_name='Date de décrêt de prorogation')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
+    basdescod = models.CharField(max_length=12, verbose_name='Code')
+    orgparite = models.CharField(max_length=12, blank=True, null=True, verbose_name='Parité')
     typorgextcod = models.CharField(max_length=64)
     orgextprescod = models.CharField(max_length=20)
     codesgg = models.CharField(max_length=60, blank=True, null=True)
@@ -1388,8 +1388,8 @@ class Orgext(models.Model):
 
 
 class Orgthe(models.Model):
-    orgcod = models.CharField(max_length=12)
-    thecle = models.SmallIntegerField()
+    orgcod = models.CharField(max_length=12, verbose_name='Code organisme')
+    thecle = models.SmallIntegerField(verbose_name='Clé')
 
     class Meta:
         managed = False
@@ -1398,9 +1398,9 @@ class Orgthe(models.Model):
 
 
 class Pcs(models.Model):
-    pcscod = models.CharField(primary_key=True, max_length=4)
-    pcslil = models.CharField(max_length=255, blank=True, null=True)
-    pcs42cod = models.CharField(max_length=2)
+    pcscod = models.CharField(primary_key=True, max_length=4, verbose_name='Code PCS')
+    pcslil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé')
+    pcs42cod = models.CharField(max_length=2, verbose_name='Code PCS42')
 
     class Meta:
         managed = False
@@ -1408,9 +1408,9 @@ class Pcs(models.Model):
 
 
 class Pcs24(models.Model):
-    pcs24cod = models.CharField(primary_key=True, max_length=2)
-    pcs24lib = models.CharField(max_length=95, blank=True, null=True)
-    pcs8cod = models.CharField(max_length=1)
+    pcs24cod = models.CharField(primary_key=True, max_length=2, verbose_name='Code PCS24')
+    pcs24lib = models.CharField(max_length=95, blank=True, null=True, verbose_name='Libellé')
+    pcs8cod = models.CharField(max_length=1, verbose_name='Code PCS8')
 
     class Meta:
         managed = False
@@ -1418,9 +1418,9 @@ class Pcs24(models.Model):
 
 
 class Pcs42(models.Model):
-    pcs42cod = models.CharField(primary_key=True, max_length=2)
-    pcs42lib = models.CharField(max_length=84, blank=True, null=True)
-    pcs24cod = models.CharField(max_length=2)
+    pcs42cod = models.CharField(primary_key=True, max_length=2, verbose_name='Code PCS42')
+    pcs42lib = models.CharField(max_length=84, blank=True, null=True, verbose_name='Libellé')
+    pcs24cod = models.CharField(max_length=2, verbose_name='Code PCS24')
 
     class Meta:
         managed = False
@@ -1428,8 +1428,8 @@ class Pcs42(models.Model):
 
 
 class Pcs8(models.Model):
-    pcs8cod = models.CharField(primary_key=True, max_length=1)
-    pcs8lil = models.CharField(max_length=255, blank=True, null=True)
+    pcs8cod = models.CharField(primary_key=True, max_length=1, verbose_name='Code PCS8')
+    pcs8lil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé')
 
     class Meta:
         managed = False
@@ -1437,8 +1437,8 @@ class Pcs8(models.Model):
 
 
 class Pcscatpro(models.Model):
-    catprocod = models.CharField(max_length=12)
-    pcscod = models.CharField(max_length=4)
+    catprocod = models.CharField(max_length=12, verbose_name='Code catégorie professionnelle')
+    pcscod = models.CharField(max_length=4, verbose_name='Code PCS')
     procatprodef = models.CharField(max_length=12, blank=True, null=True)
     pcscatproid = models.BigIntegerField(primary_key=True)
 
@@ -1448,11 +1448,11 @@ class Pcscatpro(models.Model):
 
 
 class Poicon(models.Model):
-    poiconid = models.BigIntegerField(primary_key=True)
-    senmat = models.CharField(max_length=6)
-    typpoiconcod = models.CharField(max_length=12)
+    poiconid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant point de contact')
+    senmat = models.CharField(max_length=6, verbose_name='Matricule')
+    typpoiconcod = models.CharField(max_length=12, verbose_name='Code type Point de contact')
     poiconlib = models.CharField(max_length=120, blank=True, null=True)
-    poiconnumtri = models.BigIntegerField(blank=True, null=True)
+    poiconnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
     syscredat = models.DateTimeField(blank=True, null=True)
     sysmajdat = models.DateTimeField(blank=True, null=True)
 
@@ -1462,17 +1462,17 @@ class Poicon(models.Model):
 
 
 class Qua(models.Model):
-    quacod = models.CharField(primary_key=True, max_length=12)
-    qualic = models.CharField(max_length=60)
-    quanumtri = models.BigIntegerField(blank=True, null=True)
-    quacodsex = models.CharField(max_length=1, blank=True, null=True)
-    qualib = models.CharField(max_length=120, blank=True, null=True)
-    qualil = models.CharField(max_length=255, blank=True, null=True)
-    qualicplu = models.CharField(max_length=60, blank=True, null=True)
-    qualibplu = models.CharField(max_length=120, blank=True, null=True)
-    qualilplu = models.CharField(max_length=255, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    quacod = models.CharField(primary_key=True, max_length=12, verbose_name='Code qualité')
+    qualic = models.CharField(max_length=60, verbose_name='Libellé court')
+    quanumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    quacodsex = models.CharField(max_length=1, blank=True, null=True, verbose_name='Code sexe')
+    qualib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    qualil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    qualicplu = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court pluriel')
+    qualibplu = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé pluriel')
+    qualilplu = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long pluriel')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -1480,20 +1480,20 @@ class Qua(models.Model):
 
 
 class Reg(models.Model):
-    regcod = models.CharField(primary_key=True, max_length=12)
-    territcod = models.CharField(max_length=12)
-    reglib = models.CharField(max_length=120)
-    regnumtri = models.BigIntegerField(blank=True, null=True)
-    regcodparlis = models.CharField(max_length=12, blank=True, null=True)
-    artreg = models.CharField(max_length=60, blank=True, null=True)
-    regurlcmp = models.CharField(max_length=255, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
-    regcodrpl = models.CharField(max_length=12, blank=True, null=True)
-    reglic = models.CharField(max_length=60, blank=True, null=True)
-    reglil = models.CharField(max_length=255, blank=True, null=True)
-    regdatdeb = models.DateTimeField(blank=True, null=True)
-    regdatfin = models.DateTimeField(blank=True, null=True)
+    regcod = models.CharField(primary_key=True, max_length=12, verbose_name='Code région')
+    territcod = models.CharField(max_length=12, verbose_name='Code')
+    reglib = models.CharField(max_length=120, verbose_name='Libellé région')
+    regnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    regcodparlis = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code transfert Parlis')
+    artreg = models.CharField(max_length=60, blank=True, null=True, verbose_name='Article')
+    regurlcmp = models.CharField(max_length=255, blank=True, null=True, verbose_name='URL')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
+    regcodrpl = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code région remplaçante')
+    reglic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court région')
+    reglil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long région')
+    regdatdeb = models.DateTimeField(blank=True, null=True, verbose_name='Date début région')
+    regdatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date fin région')
     regcodint = models.CharField(max_length=50, blank=True, null=True)
 
     class Meta:
@@ -1502,32 +1502,32 @@ class Reg(models.Model):
 
 
 class Sen(models.Model):
-    senmat = models.CharField(primary_key=True, max_length=6)
-    quacod = models.CharField(max_length=12)
-    sennomuse = models.CharField(max_length=40)
-    sennomtec = models.CharField(unique=True, max_length=60)
-    senprenomuse = models.CharField(max_length=60)
-    sendatnai = models.DateTimeField(blank=True, null=True)
-    sendatdec = models.DateTimeField(blank=True, null=True)
-    etasencod = models.CharField(max_length=12)
-    sendespro = models.CharField(max_length=255, blank=True, null=True)
-    pcscod = models.CharField(max_length=4)
-    catprocod = models.CharField(max_length=12)
-    sengrppolcodcou = models.CharField(max_length=12, blank=True, null=True)
-    sengrppolliccou = models.CharField(max_length=60, blank=True, null=True)
-    sentypappcou = models.CharField(max_length=60, blank=True, null=True)
-    sencomcodcou = models.CharField(max_length=12, blank=True, null=True)
-    sencomliccou = models.CharField(max_length=60, blank=True, null=True)
-    sencirnumcou = models.BigIntegerField(blank=True, null=True)
-    sencircou = models.CharField(max_length=120, blank=True, null=True)
-    senburliccou = models.CharField(max_length=60, blank=True, null=True)
-    senema = models.CharField(max_length=255, blank=True, null=True)
-    sennomusecap = models.CharField(max_length=40)
-    senfem = models.CharField(max_length=12, blank=True, null=True)
-    sennumsie = models.BigIntegerField(blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
-    sendaiurl = models.CharField(max_length=255, blank=True, null=True)
+    senmat = models.CharField(primary_key=True, max_length=6, verbose_name='Matricule')
+    quacod = models.CharField(max_length=12, verbose_name='Code qualité')
+    sennomuse = models.CharField(max_length=40, verbose_name='Nom usuel')
+    sennomtec = models.CharField(unique=True, max_length=60, verbose_name='Nom technique (tris)')
+    senprenomuse = models.CharField(max_length=60, verbose_name='Prénom usuel')
+    sendatnai = models.DateTimeField(blank=True, null=True, verbose_name='Date de naissance')
+    sendatdec = models.DateTimeField(blank=True, null=True, verbose_name='Date du décés')
+    etasencod = models.CharField(max_length=12, verbose_name='Code état sénateur')
+    sendespro = models.CharField(max_length=255, blank=True, null=True, verbose_name='Description Profession')
+    pcscod = models.CharField(max_length=4, verbose_name='Code PCS')
+    catprocod = models.CharField(max_length=12, verbose_name='Code catégorie professionnelle')
+    sengrppolcodcou = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code groupe politique courant')
+    sengrppolliccou = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé groupe politique courant')
+    sentypappcou = models.CharField(max_length=60, blank=True, null=True, verbose_name='Appartenance politique courante')
+    sencomcodcou = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code commission courante')
+    sencomliccou = models.CharField(max_length=60, blank=True, null=True, verbose_name='Commission courante')
+    sencirnumcou = models.BigIntegerField(blank=True, null=True, verbose_name='Identifiant circonscription')
+    sencircou = models.CharField(max_length=120, blank=True, null=True, verbose_name='Circonscription courante')
+    senburliccou = models.CharField(max_length=60, blank=True, null=True, verbose_name='Fonction bureau courante')
+    senema = models.CharField(max_length=255, blank=True, null=True, verbose_name='Adresse électronique')
+    sennomusecap = models.CharField(max_length=40, verbose_name='Nom usuel Capitales')
+    senfem = models.CharField(max_length=12, blank=True, null=True, verbose_name='Féminisation fonctions')
+    sennumsie = models.BigIntegerField(blank=True, null=True, verbose_name='N° de siège Hémicycle')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
+    sendaiurl = models.CharField(max_length=255, blank=True, null=True, verbose_name="URL des déclarations d'intérêts")
 
     class Meta:
         managed = False
@@ -1536,21 +1536,21 @@ class Sen(models.Model):
 
 
 class Senbur(models.Model):
-    senburid = models.BigIntegerField(primary_key=True)
-    burcod = models.CharField(max_length=12)
-    senburdatdeb = models.DateTimeField(blank=True, null=True)
-    senburdatfin = models.DateTimeField(blank=True, null=True)
-    senburrelint = models.CharField(max_length=12, blank=True, null=True)
-    senburrngele = models.BigIntegerField(blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    senmat = models.CharField(max_length=6)
-    senburhon = models.CharField(max_length=12, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    senburid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    burcod = models.CharField(max_length=12, verbose_name='Code bureau 4e Rép.')
+    senburdatdeb = models.DateTimeField(blank=True, null=True, verbose_name='Date de début')
+    senburdatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date de fin')
+    senburrelint = models.CharField(max_length=12, blank=True, null=True, verbose_name='Chargé Relations Internationales')
+    senburrngele = models.BigIntegerField(blank=True, null=True, verbose_name="Rang d'élection")
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    senmat = models.CharField(max_length=6, verbose_name='Matricule')
+    senburhon = models.CharField(max_length=12, blank=True, null=True, verbose_name='Honorariat')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -1558,17 +1558,17 @@ class Senbur(models.Model):
 
 
 class Sennom(models.Model):
-    senmat = models.CharField(max_length=6)
-    sennomdatdeb = models.DateTimeField()
-    sennomdatfin = models.DateTimeField(blank=True, null=True)
-    quacod = models.CharField(max_length=12)
-    sennomuse = models.CharField(max_length=40)
-    sennomusecap = models.CharField(max_length=40)
-    sennomtec = models.CharField(max_length=60)
-    senprenomuse = models.CharField(max_length=60)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
-    sennomid = models.BigIntegerField(primary_key=True)
+    senmat = models.CharField(max_length=6, verbose_name='Matricule')
+    sennomdatdeb = models.DateTimeField(verbose_name='Date de début')
+    sennomdatfin = models.DateTimeField(blank=True, null=True, verbose_name='Date de fin')
+    quacod = models.CharField(max_length=12, verbose_name='Code qualité')
+    sennomuse = models.CharField(max_length=40, verbose_name='Nom usuel')
+    sennomusecap = models.CharField(max_length=40, verbose_name='Nom usuel Capitales')
+    sennomtec = models.CharField(max_length=60, verbose_name='Nom technique')
+    senprenomuse = models.CharField(max_length=60, verbose_name='Prénom usuel')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
+    sennomid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
 
     class Meta:
         managed = False
@@ -1577,18 +1577,18 @@ class Sennom(models.Model):
 
 
 class Senurl(models.Model):
-    senurlid = models.BigIntegerField(primary_key=True)
-    senmat = models.CharField(max_length=6)
-    typurlcod = models.CharField(max_length=12)
-    senurlurl = models.CharField(max_length=255)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    senurlnumtri = models.BigIntegerField(blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    senurlid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant')
+    senmat = models.CharField(max_length=6, verbose_name='Matricule')
+    typurlcod = models.CharField(max_length=12, verbose_name='Code type URL')
+    senurlurl = models.CharField(max_length=255, verbose_name='URL')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    senurlnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -1596,12 +1596,12 @@ class Senurl(models.Model):
 
 
 class Stajur(models.Model):
-    stajurcod = models.CharField(primary_key=True, max_length=12)
-    stajurlic = models.CharField(max_length=60, blank=True, null=True)
-    stajurlib = models.CharField(max_length=120, blank=True, null=True)
-    stajurnumtri = models.BigIntegerField(blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    stajurcod = models.CharField(primary_key=True, max_length=12, verbose_name='Code')
+    stajurlic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    stajurlib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    stajurnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -1609,11 +1609,11 @@ class Stajur(models.Model):
 
 
 class Telephone(models.Model):
-    telid = models.BigIntegerField(primary_key=True)
-    typtelcod = models.CharField(max_length=12)
-    poiconid = models.BigIntegerField()
-    telnum = models.CharField(max_length=15, blank=True, null=True)
-    telnumtri = models.BigIntegerField(blank=True, null=True)
+    telid = models.BigIntegerField(primary_key=True, verbose_name='Identifiant téléphone')
+    typtelcod = models.CharField(max_length=12, verbose_name='Code type numéro de téléphone')
+    poiconid = models.BigIntegerField(verbose_name='Identifiant point de contact')
+    telnum = models.CharField(max_length=15, blank=True, null=True, verbose_name='Numéro de tel')
+    telnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
     syscredat = models.DateTimeField(blank=True, null=True)
     sysmajdat = models.DateTimeField(blank=True, null=True)
 
@@ -1623,9 +1623,9 @@ class Telephone(models.Model):
 
 
 class Temval(models.Model):
-    temvalcod = models.CharField(primary_key=True, max_length=12)
-    temvallic = models.CharField(max_length=60)
-    temvallib = models.CharField(max_length=120)
+    temvalcod = models.CharField(primary_key=True, max_length=12, verbose_name='Code validité')
+    temvallic = models.CharField(max_length=60, verbose_name='Libellé court')
+    temvallib = models.CharField(max_length=120, verbose_name='Libellé')
 
     class Meta:
         managed = False
@@ -1633,13 +1633,13 @@ class Temval(models.Model):
 
 
 class Territ(models.Model):
-    territcod = models.CharField(primary_key=True, max_length=12)
-    territlib = models.CharField(max_length=120, blank=True, null=True)
-    territnumtri = models.BigIntegerField(blank=True, null=True)
-    territart = models.CharField(max_length=60, blank=True, null=True)
-    territurlcmp = models.CharField(max_length=255, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    territcod = models.CharField(primary_key=True, max_length=12, verbose_name='Code')
+    territlib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé territoire')
+    territnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Ordre de tri')
+    territart = models.CharField(max_length=60, blank=True, null=True, verbose_name='Article')
+    territurlcmp = models.CharField(max_length=255, blank=True, null=True, verbose_name='URL')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
     catterritcod = models.CharField(max_length=12)
     territlic = models.CharField(max_length=60, blank=True, null=True)
     territlil = models.CharField(max_length=255, blank=True, null=True)
@@ -1650,9 +1650,9 @@ class Territ(models.Model):
 
 
 class Titele(models.Model):
-    titelecod = models.CharField(primary_key=True, max_length=12)
+    titelecod = models.CharField(primary_key=True, max_length=12, verbose_name='Code titre élu')
     titelelic = models.CharField(max_length=60)
-    typmancod = models.CharField(max_length=12)
+    typmancod = models.CharField(max_length=12, verbose_name='Code type mandat')
     titelelib = models.CharField(max_length=120)
     titelelil = models.CharField(max_length=255, blank=True, null=True)
     titelenumtri = models.BigIntegerField(blank=True, null=True)
@@ -1667,8 +1667,8 @@ class Titele(models.Model):
     titelelibhonplu = models.CharField(max_length=120, blank=True, null=True)
     titeleurltempub = models.CharField(max_length=12, blank=True, null=True)
     titeledef = models.CharField(max_length=12, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -1676,12 +1676,12 @@ class Titele(models.Model):
 
 
 class Typadr(models.Model):
-    typadrcod = models.CharField(primary_key=True, max_length=12)
-    typadrlic = models.CharField(max_length=60, blank=True, null=True)
-    typadrlib = models.CharField(max_length=120, blank=True, null=True)
-    typadrnumtri = models.BigIntegerField(blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    typadrcod = models.CharField(primary_key=True, max_length=12, verbose_name='Code type adresse')
+    typadrlic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    typadrlib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    typadrnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -1689,19 +1689,19 @@ class Typadr(models.Model):
 
 
 class Typapppol(models.Model):
-    typapppolcod = models.CharField(primary_key=True, max_length=1)
-    typapppollib = models.CharField(max_length=120, blank=True, null=True)
-    typapppollic = models.CharField(max_length=60, blank=True, null=True)
-    typapppolnumtri = models.BigIntegerField(blank=True, null=True)
-    typapppollil = models.CharField(max_length=255, blank=True, null=True)
-    typapppollicfem = models.CharField(max_length=60, blank=True, null=True)
-    typapppollibfem = models.CharField(max_length=120, blank=True, null=True)
-    typapppollilfem = models.CharField(max_length=255, blank=True, null=True)
-    typapppollicplu = models.CharField(max_length=60, blank=True, null=True)
-    typapppollibplu = models.CharField(max_length=120, blank=True, null=True)
-    typapppollilplu = models.CharField(max_length=255, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    typapppolcod = models.CharField(primary_key=True, max_length=1, verbose_name='Code type appartenance')
+    typapppollib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    typapppollic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    typapppolnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    typapppollil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    typapppollicfem = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court féminin')
+    typapppollibfem = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé féminin')
+    typapppollilfem = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long féminin')
+    typapppollicplu = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court pluriel')
+    typapppollibplu = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé pluriel')
+    typapppollilplu = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long pluriel')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -1709,10 +1709,10 @@ class Typapppol(models.Model):
 
 
 class Typbister(models.Model):
-    typbistercod = models.CharField(primary_key=True, max_length=12)
-    typbisterlic = models.CharField(max_length=60, blank=True, null=True)
-    typbisterlib = models.CharField(max_length=120, blank=True, null=True)
-    typbisternumtri = models.BigIntegerField(blank=True, null=True)
+    typbistercod = models.CharField(primary_key=True, max_length=12, verbose_name='Code Type bis ter')
+    typbisterlic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    typbisterlib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    typbisternumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
 
     class Meta:
         managed = False
@@ -1763,13 +1763,13 @@ class TypeCategorie(models.Model):
 
 
 class Typele(models.Model):
-    typelecod = models.CharField(primary_key=True, max_length=12)
-    typelelic = models.CharField(max_length=60, blank=True, null=True)
-    typelelib = models.CharField(max_length=120, blank=True, null=True)
-    typelelil = models.CharField(max_length=500, blank=True, null=True)
-    typelenumtri = models.BigIntegerField(blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    typelecod = models.CharField(primary_key=True, max_length=12, verbose_name='Code type élection')
+    typelelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    typelelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    typelelil = models.CharField(max_length=500, blank=True, null=True, verbose_name='Libellé long')
+    typelenumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -1777,14 +1777,14 @@ class Typele(models.Model):
 
 
 class Typgrpsen(models.Model):
-    typgrpsencod = models.CharField(primary_key=True, max_length=12)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
+    typgrpsencod = models.CharField(primary_key=True, max_length=12, verbose_name='Code type groupe')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
     typgrpsennumtri = models.BigIntegerField(blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -1792,12 +1792,12 @@ class Typgrpsen(models.Model):
 
 
 class Typman(models.Model):
-    typmancod = models.CharField(primary_key=True, max_length=12)
-    typmanlib = models.CharField(max_length=120, blank=True, null=True)
-    typmantypele = models.CharField(max_length=12, blank=True, null=True)
-    typmannumtri = models.BigIntegerField(blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    typmancod = models.CharField(primary_key=True, max_length=12, verbose_name='Code type mandat')
+    typmanlib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé type mandat')
+    typmantypele = models.CharField(max_length=12, blank=True, null=True, verbose_name="Type d'élection")
+    typmannumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -1805,15 +1805,15 @@ class Typman(models.Model):
 
 
 class Typorg(models.Model):
-    typorgcod = models.CharField(primary_key=True, max_length=12)
-    typorglib = models.CharField(max_length=120)
-    typorglic = models.CharField(max_length=60)
-    typorgnumtri = models.BigIntegerField(blank=True, null=True)
-    typorgurlsim = models.CharField(max_length=500, blank=True, null=True)
-    typorgurlcmp = models.CharField(max_length=500, blank=True, null=True)
-    typorglibplu = models.CharField(max_length=120, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    typorgcod = models.CharField(primary_key=True, max_length=12, verbose_name='Code type organisme')
+    typorglib = models.CharField(max_length=120, verbose_name='Libellé')
+    typorglic = models.CharField(max_length=60, verbose_name='Libellé court')
+    typorgnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    typorgurlsim = models.CharField(max_length=500, blank=True, null=True, verbose_name='URL simplifiée')
+    typorgurlcmp = models.CharField(max_length=500, blank=True, null=True, verbose_name='URL complète')
+    typorglibplu = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé pluriel')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -1821,17 +1821,17 @@ class Typorg(models.Model):
 
 
 class Typurl(models.Model):
-    typurlcod = models.CharField(primary_key=True, max_length=12)
-    temvalcod = models.CharField(max_length=12, blank=True, null=True)
-    evelic = models.CharField(max_length=60, blank=True, null=True)
-    evelib = models.CharField(max_length=120, blank=True, null=True)
-    evelil = models.CharField(max_length=255, blank=True, null=True)
-    eveobs = models.CharField(max_length=255, blank=True, null=True)
-    typurllogo = models.CharField(max_length=255, blank=True, null=True)
-    typurlnumtri = models.BigIntegerField(blank=True, null=True)
-    typurllogoref = models.CharField(max_length=255, blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    typurlcod = models.CharField(primary_key=True, max_length=12, verbose_name='Code type URL')
+    temvalcod = models.CharField(max_length=12, blank=True, null=True, verbose_name='Code validité')
+    evelic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    evelib = models.CharField(max_length=120, blank=True, null=True, verbose_name='Libellé')
+    evelil = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé long')
+    eveobs = models.CharField(max_length=255, blank=True, null=True, verbose_name='Observations')
+    typurllogo = models.CharField(max_length=255, blank=True, null=True, verbose_name='Logo')
+    typurlnumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    typurllogoref = models.CharField(max_length=255, blank=True, null=True, verbose_name='Logo refonte')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
@@ -1839,10 +1839,10 @@ class Typurl(models.Model):
 
 
 class Typvoi(models.Model):
-    typvoicod = models.CharField(primary_key=True, max_length=12)
-    typvoilic = models.CharField(max_length=60, blank=True, null=True)
-    typvoilib = models.CharField(max_length=255, blank=True, null=True)
-    typvoinumtri = models.BigIntegerField(blank=True, null=True)
+    typvoicod = models.CharField(primary_key=True, max_length=12, verbose_name='Code type de voie')
+    typvoilic = models.CharField(max_length=60, blank=True, null=True, verbose_name='Libellé court')
+    typvoilib = models.CharField(max_length=255, blank=True, null=True, verbose_name='Libellé')
+    typvoinumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
 
     class Meta:
         managed = False
@@ -1850,13 +1850,13 @@ class Typvoi(models.Model):
 
 
 class Zongeo(models.Model):
-    zongeocod = models.CharField(primary_key=True, max_length=12)
-    concod = models.CharField(max_length=12)
-    zongeolib = models.CharField(max_length=120)
-    zongeolic = models.CharField(max_length=60)
-    zongeonumtri = models.BigIntegerField(blank=True, null=True)
-    syscredat = models.DateTimeField(blank=True, null=True)
-    sysmajdat = models.DateTimeField(blank=True, null=True)
+    zongeocod = models.CharField(primary_key=True, max_length=12, verbose_name='Code zone géographique')
+    concod = models.CharField(max_length=12, verbose_name='Code continent')
+    zongeolib = models.CharField(max_length=120, verbose_name='Libellé')
+    zongeolic = models.CharField(max_length=60, verbose_name='Libellé court')
+    zongeonumtri = models.BigIntegerField(blank=True, null=True, verbose_name='Numéro de tri')
+    syscredat = models.DateTimeField(blank=True, null=True, verbose_name='Date système création')
+    sysmajdat = models.DateTimeField(blank=True, null=True, verbose_name='Date système modification')
 
     class Meta:
         managed = False
